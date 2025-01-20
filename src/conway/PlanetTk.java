@@ -1,51 +1,3 @@
-import tkinter as tk
-import random
-
-class Grid:
-
-    def __init__(self, grid_init):
-        self.__grid = grid_init
-        self.__lines_count = len(grid_init)  # Nombre de lignes dans la grille.
-        self.__columns_count = len(grid_init[0]) # Nombre de colonnes dans la grille.
-
-    def get_grid(self):
-        return self.__grid
-
-    def get_lines_count(self):
-        """
-        Retourne le nombre de lignes dans la grille.
-        """
-        return self.__lines_count
-
-    def get_columns_count(self):
-        """
-        Retourne le nombre de colonnes dans la grille. 
-        """
-        return self.__columns_count
-
-    def get_coordinates_from_cell_number(self, cell_number):
-        """ 
-        Converti un numéro de case 'cell_number' de la grille vers les coordonnées (ligne, colonne)
-        correspondants.
-        """
-        return cell_number // self.__columns_count, cell_number % self.__columns_count
-
-    def get_cell_number_from_coordinates(self, line_number, column_number):
-        """ 
-        Converti les coordonnées ('line_number', 'column_number') de la grille vers le numéro de case
-        correspondant.
-        """
-        return line_number * self.__columns_count + column_number
-
-class PlanetAlpha(Grid) :
-
-    NORTH,EAST,SOUTH,WEST, NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST = (-1, 0), (0, 1), (1, 0), (0, -1),(-1, 1), (1, 1), (1, -1), (-1, -1)
-
-    def __init__ (self, name, latitude_cells_count, longitude_cells_count,ground) :
-        # Initialise une grille avec l'aide de la classe Grid.
-        Grid.__init__(self, [[ground for i in range(longitude_cells_count)] for j in range(latitude_cells_count)])
-        self.__name = name
-        self.__ground = ground
 
 class PlanetTk(PlanetAlpha, tk.Canvas):
 
@@ -118,13 +70,4 @@ class PlanetTk(PlanetAlpha, tk.Canvas):
         """
         return self.itemcget(f'c_{cell_number}', 'fill'), self.itemcget(f't_{cell_number}', 'fill')
 
-class Element :
 
-    def __init__(self,char_repr):
-        self.__char_repr = char_repr
-
-    def __repr__(self):
-        """
-        Retourne une representation avec un caractere.
-        """
-        return self.__char_repr
