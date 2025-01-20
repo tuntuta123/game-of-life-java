@@ -1,10 +1,12 @@
-class Element :
+public class Element {
+    private String charRepr;
 
-    def __init__(self,char_repr):
-        self.__char_repr = char_repr
+    public Element(String charRepr) {
+        this.charRepr = charRepr;
+    }
 
-    def __repr__(self):
-        """
-        Retourne une representation avec un caractere.
-        """
-        return self.__char_repr
+    @Override
+    public String toString() {
+        return charRepr;
+    }
+}
