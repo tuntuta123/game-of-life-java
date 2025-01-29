@@ -1,4 +1,4 @@
-package conway;
+/*package conway;
 
 public class Node{
 	Node sw;
@@ -26,18 +26,18 @@ public class Node{
 	}
 	
 	public Node getSw(Node n){
-		return this.sw
+		return this.sw;
 	}
 	
 	public Node getNw(Node n){
-		return this.Nw
+		return this.Nw;
 	}
 	
 	public Node getNe(Node n){
-		return this.ne
+		return this.ne;
 	}
 	
 	public Node getSe(Node n){
-		return this.se
+		return this.se;
 	}
-}
+}*/

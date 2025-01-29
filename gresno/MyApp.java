@@ -16,9 +16,7 @@ class MyApp(tk.Tk):
         tk.Tk.__init__(self)
         self.title("Projet fil rouge")  
         # Création de trois boutons connectés aux trois jeux différents : SnakeGame, Conway Game et Turmites Game    
-        tk.Button(self, text='Snake game', command=lambda: SnakeGameWindow(self)).pack(side=tk.LEFT)
         tk.Button(self, text='Conway game', command=lambda: ConwayWindow(self)).pack(side=tk.LEFT)
-        tk.Button(self, text='Turmites game', command=lambda: TurmitesWindow(self)).pack(side=tk.LEFT)
         # Création d'un bouton pour quitter la fenêtre
         tk.Button(self, text='Quitter', command=self.quit).pack(side=tk.RIGHT)
 

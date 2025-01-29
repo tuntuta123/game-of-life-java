@@ -2,38 +2,52 @@ package conway;
 
 public class Grid {
 
-    def __init__( grid_init):
-        self.__grid = grid_init
-        self.__lines_count = len(grid_init)  # Nombre de lignes dans la grille.
-        self.__columns_count = len(grid_init[0]) # Nombre de colonnes dans la grille.
+	public Cell[][] cells;
+	public int size;
 
-    def get_grid(self):
-        return self.__grid
+	public Grid(int s) {
+		this.size = s;
+		this.cells = new Cell[s][s];
+		for(int i = 0; i < s; i ++) {
+			for (int j = 0; j < s; j++) {
+				this.cells[i][j] = new Cell(false, i, j);
+			}
+		}
+	}
+	
+	public int getSize() {
+		return this.size;
+	}
 
-    def get_lines_count(self):
-        """
-        Retourne le nombre de lignes dans la grille.
-        """
-        return self.__lines_count
+	public Cell getCell(int x, int y) {
+		return this.cells[x][y];
+	}
+	
+	public void setCell(int x, int y, Cell cell) {
+		this.cells[x][y] = cell;
+	}
+	
+	public int countAliveNeighbours(Cell c){
+		int aliveCount = 0;
+		for (int dx = -1; dx <= 1; dx++) {
+		    for (int dy = -1; dy <= 1; dy++) {
+		        if (dx == 0 && dy == 0) {
+		            continue;
+		        }
 
-    def get_columns_count(self):
-        """
-        Retourne le nombre de colonnes dans la grille. 
-        """
-        return self.__columns_count
+		        int neighborX = c.getX() + dx;
+		        int neighborY = c.getY() + dy;
 
-    def get_coordinates_from_cell_number(self, cell_number):
-        """ 
-        Converti un numéro de case 'cell_number' de la grille vers les coordonnées (ligne, colonne)
-        correspondants.
-        """
-        return cell_number // self.__columns_count, cell_number % self.__columns_count
+		        if (neighborX >= 0 && neighborX < this.size && neighborY >= 0 && neighborY < this.size) {
+		            Cell neighbor = cells[neighborX][neighborY];
+		            if (neighbor.isAlive()) {
+		                aliveCount++;
+		            }
+		        }
+		    }
+		}
 
-    def get_cell_number_from_coordinates(self, line_number, column_number):
-        """ 
-        Converti les coordonnées ('line_number', 'column_number') de la grille vers le numéro de case
-        correspondant.
-        """
-        return line_number * self.__columns_count + column_number
-
+		return aliveCount;
+	}
+	
 }
