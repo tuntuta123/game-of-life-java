@@ -9,20 +9,32 @@ public class Rule{
 		this.grid = g;
 	}
 	
-	public void updateCell(Cell c) {
-		int nb = grid.countAliveNeighbours(c);
+	public boolean calculateState(Cell c){
+	int nb = grid.countAliveNeighbours(c);
 		if (c.isAlive()){
 			if ((nb < 2) || (nb > 3)) {
-				c.setState(false);
+				return false;
 			}		
 		}
 		
 		else {
 			if (nb == 3) {
-				c.setState(true);
+				return true;
 			}
-		}	
+		}
+		return c.isAlive();
 	}
+
+	
+	public void updateState() {
+		for(int i=0;i<this.grid.getSize();i++){
+			for(int j = 0; j < this.grid.getSize(); j++){
+				this.calculateState(this.grid.getCell(i,j));
+			}
+		}
+	}
+	
+	
 
 	
 }
