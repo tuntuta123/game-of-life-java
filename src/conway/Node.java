@@ -13,7 +13,7 @@ public class Node{
 		this.se=se;
 		this.nw=nw
 		this.sw=sw;
-		this.alive=alive
+		this.alive=alive;
 		this.level=level;
 	}
 	
@@ -26,19 +26,19 @@ public class Node{
 	}
 	
 	public Node getSw(Node n){
-		return this.sw
+		return this.sw;
 	}
 	
 	public Node getNw(Node n){
-		return this.Nw
+		return this.nw;
 	}
 	
 	public Node getNe(Node n){
-		return this.ne
+		return this.ne;
 	}
 	
 	public Node getSe(Node n){
-		return this.se
+		return this.se;
 	}
 }
 
