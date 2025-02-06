@@ -28,7 +28,7 @@ public class Conway{
 		return gCopy;	
 	}
 	
-	public void runGeneration(Grid grid, Rule rules) {
+	public void runGeneration(Grid grid, HashLife rules) {
 		Grid tmp = new Grid(this.grid.getSize());
 		Rule r = new Rule(this.grid);
 		for(int i=0;i<this.grid.getSize();i++) {

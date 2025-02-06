@@ -10,14 +10,6 @@ public class Cell{
 		this.alive = alive;
 		this.coordX = x;
 		this.coordY = y;
-		/*this.ne=null;
-		this.se=null;
-		this.nw=null;
-		this.sw=null;
-		this.north=null;
-		this.west=null;
-		this.east=null;
-		this.south=null;*/
 	}
 	
 	public boolean isAlive() {
@@ -52,38 +44,4 @@ public class Cell{
 			this.alive = true;
 		}
 	}
-	
-	
-	/*public Node getSw(Node n){
-		return this.sw;
-	}
-	
-	public Node getNw(Node n){
-		return this.Nw;
-	}
-	
-	public Node getNe(Node n){
-		return this.ne;
-	}
-	
-	public Node getSe(Node n){
-		return this.se;
-	}
-	
-	public Node getSouth(Node n){
-		return this.south;
-	}
-	
-	public Node getWest(Node n){
-		return this.west;
-	}
-	
-	public Node getNorth(Node n){
-		return this.north;
-	}
-	
-	public Node getEast(Node n){
-		return this.east;
-	}*/
-	
 }
