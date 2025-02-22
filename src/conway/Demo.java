@@ -1,61 +1,91 @@
 package conway;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 
-/**
- * La classe Demo permet de simuler le jeu de la vie de Conway en générant une grille initiale aléatoire 
- * et en affichant les générations successives.
- * Elle utilise la classe HashLifeAlgo pour appliquer l'algorithme de simulation avec la règle de Conway.
- */
-public class Demo {
+public class Demo extends JFrame {
 
-    public static void main(String[] args) {
-    
-        int width = 10; 
-        int height = 10; 
-        
-        Grid grid = new Grid(width, height); 
-        Random rand = new Random(); 
+    private static final int WIDTH = 10;
+    private static final int HEIGHT = 10;
+    private Grid grid;
+    private HashLifeAlgo hashLifeAlgo;
+    private GridPanel gridPanel;
+    private JButton start, next;
+    private boolean active = false;
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (rand.nextDouble() < 0.2) { // 20% de chance qu'une cellule soit vivante.
+    public Demo() {
+        this.grid = new Grid(WIDTH, HEIGHT);
+        initializeRandomGrid();
+
+        Rule game = new Conway();
+        this.hashLifeAlgo = new HashLifeAlgo(grid, game);
+        this.grid.setNeighbors();
+
+
+        this.setTitle("Jeu de la vie");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
+
+
+        this.gridPanel = new GridPanel(grid);
+        this.add(gridPanel, BorderLayout.CENTER);
+
+ 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+
+        this.start = new JButton("Commencer");
+        this.start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                active = true;
+                startSimulation();
+            }
+        });
+
+        this.next = new JButton("Suivant");
+        this.next.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (active) {
+                    hashLifeAlgo.generate();
+                    gridPanel.repaint(); 
+                }
+            }
+        });
+
+        buttonPanel.add(start);
+        buttonPanel.add(next);
+        this.add(buttonPanel, BorderLayout.SOUTH);
+
+
+        this.pack();
+        this.setVisible(true);
+    }
+
+
+    private void initializeRandomGrid() {
+        Random rand = new Random();
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                if (rand.nextDouble() < 0.2) {
                     grid.setNode(x, y, true);
                 }
             }
         }
-
-        Rule conwayRule = new Conway(); 
-        HashLifeAlgo hashLifeAlgo = new HashLifeAlgo(grid, conwayRule); 
-
-        System.out.println("Initial grid:");
-        printGrid(grid);
-
-        for (int i = 0; i < 10; i++) {
-            System.out.println("Step " + (i + 1) + ":");
-            hashLifeAlgo.generate(); 
-            printGrid(grid); 
-        }
     }
 
-    /**
-     * Affiche l'état de la grille dans la console.
-     * Les cellules vivantes sont représentées par "O" et les cellules mortes par ".".
-     *
-     * @param grid La grille à afficher.
-     */
-    private static void printGrid(Grid grid) {
-        for (int y = 0; y < grid.getHeight(); y++) {
-            for (int x = 0; x < grid.getWidth(); x++) {
-                if (grid.getNode(x, y).isAlive()) {
-                    System.out.print("O"); 
-                } else {
-                    System.out.print("."); 
-                }
-            }
-            System.out.println(); 
-        }
-        System.out.println(); 
+
+    private void startSimulation() {
+        grid.setNeighbors();
+
+    }
+
+    public static void main(String[] args) {
+        new Demo();
     }
 }
 
