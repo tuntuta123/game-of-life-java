@@ -9,7 +9,7 @@ public class Grid {
         this.width = width;
         this.height = height;
         this.grid = new Node[width][height];
-        this.initializeGrid();
+        initializeGrid();
     }
 
     private void initializeGrid() {
@@ -21,7 +21,7 @@ public class Grid {
     }
 
     public Node getNode(int x, int y) {
-        return this.grid[x][y]; 
+        return grid[x][y]; 
     }
 
     public void setNode(int x, int y, boolean alive) {
@@ -37,10 +37,19 @@ public class Grid {
     }
 
     public void setNeighbors() {
-        for (int x = 0; x < this.width; x++) {
-            for (int y = 0; y < this.height; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 Node node = this.grid[x][y];
-                node.setNeighborsNode(this.getNeighbors(x, y));
+                Node[] neighbors = getNeighbors(x, y);
+
+                node.setNorthEast(neighbors[0]);
+                node.setNorth(neighbors[1]);
+                node.setNorthWest(neighbors[2]);
+                node.setWest(neighbors[3]);
+                node.setEast(neighbors[4]);
+                node.setSouthEast(neighbors[5]);
+                node.setSouth(neighbors[6]);
+                node.setSouthWest(neighbors[7]);
             }
         }
     }
@@ -51,17 +60,17 @@ public class Grid {
 
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                if (dx != 0 || dy != 0) {
+                if (dx == 0 && dy == 0) 
+                    continue; 
 
-		            int nx = x + dx;
-		            int ny = y + dy;
+                int nx = x + dx;
+                int ny = y + dy;
 
-		            if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
-		                neighbors[index++] = this.grid[nx][ny];
-		            } else {
-		                neighbors[index++] = null; 
-		            }
-		        }
+                if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
+                    neighbors[index++] = this.grid[nx][ny];
+                } else {
+                    neighbors[index++] = null; 
+                }
             }
         }
 

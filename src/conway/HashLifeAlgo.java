@@ -1,10 +1,10 @@
-package conway;
+package conway
 import java.util.HashMap;
 
 public class HashLifeAlgo {
     private Grid grid;
     private Rule rule;
-    private HashMap<Integer, Boolean> cache;
+    private HashMap<Integer, Boolean> cache; 
 
     public HashLifeAlgo(Grid grid, Rule rule) {
         this.grid = grid;
@@ -12,26 +12,25 @@ public class HashLifeAlgo {
         this.cache = new HashMap<>();
     }
 
-    public void generate() {
+    public void nextGeneration() {
         Grid newGrid = new Grid(grid.getWidth(), grid.getHeight());
-        grid.setNeighbors(); 
-        
+
+        grid.setNeighbors();
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
-            
-                Node current = grid.getNode(x, y);
-                int key = this.getKey(x, y);  
-                Boolean stored = cache.get(key);
+                Node currentNode = grid.getNode(x, y);
+                int nodeKey = getNodeHashCode(x, y); 
+                Boolean cachedState = cache.get(nodeKey);
 
-                boolean state;
-                if (stored != null) {
-                    state = stored;
+                boolean newState;
+                if (cachedState != null) {
+                    newState = cachedState;
                 } else {
-                    state = rule.applyRule(current);
-                    cache.put(key, state);
+                    newState = rule.applyRule(currentNode);
+                    cache.put(nodeKey, newState);
                 }
 
-                newGrid.setNode(x, y, state);
+                newGrid.setNode(x, y, newState);
             }
         }
 
@@ -44,19 +43,93 @@ public class HashLifeAlgo {
         grid.setNeighbors();  
     }
 
-	private int getKey(int x, int y) {
-		Node node = grid.getNode(x, y);
-		int key = node.hashCode();  
+private int getNodeHashCode(int x, int y) {
+    Node node = grid.getNode(x, y);
 
-		for (Node neighbor : node.getNeighborsNode()) {
-			if (neighbor != null) {
-				key = 17 * key + neighbor.hashCode();
-			} else {
-				key = 17 * key + 0;  
-			}
-		}
-		return key;  
-	}
+    int hashCode = 17 * (node.isAlive() ? 1 : 0); 
+
+    if (node.getNorth() != null) {
+        if (node.getNorth().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getSouth() != null) {
+        if (node.getSouth().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getEast() != null) {
+        if (node.getEast().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getWest() != null) {
+        if (node.getWest().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getNorthEast() != null) {
+        if (node.getNorthEast().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getNorthWest() != null) {
+        if (node.getNorthWest().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getSouthEast() != null) {
+        if (node.getSouthEast().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    if (node.getSouthWest() != null) {
+        if (node.getSouthWest().isAlive()) {
+            hashCode = 17 * hashCode + 1;
+        } else {
+            hashCode = 17 * hashCode + 0;
+        }
+    } else {
+        hashCode = 17 * hashCode + 0;
+    }
+
+    return hashCode;  
+}
 
 }
 

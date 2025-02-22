@@ -22,23 +22,23 @@ public class Demo {
         Rule conwayRule = new Conway();
         HashLifeAlgo hashLifeAlgo = new HashLifeAlgo(grid, conwayRule);
 
-        System.out.println("Initial grid");
+        System.out.println("Initial grid:");
         printGrid(grid);
 
         for (int i = 0; i < 10; i++) {
-            System.out.println("Step " + (i + 1));
-            hashLifeAlgo.generate();
-            printGrid(grid);
+            System.out.println("Step " + (i + 1) + ":");
+            hashLifeAlgo.nextGeneration(); 
+            printGrid(grid); 
         }
     }
 
     private static void printGrid(Grid grid) {
-        for (int x = 0; x < grid.getWidth(); x++) {
-            for (int y = 0; y < grid.getHeight(); y++) {
-            	if (grid.getNode(x, y).isAlive())
-                	System.out.print("O");
+        for (int y = 0; y < grid.getHeight(); y++) {
+            for (int x = 0; x < grid.getWidth(); x++) {
+                if (grid.getNode(x, y).isAlive())
+                    System.out.print("O");
                 else 
-                	System.out.print(".");
+                    System.out.print(".");
             }
             System.out.println();
         }
