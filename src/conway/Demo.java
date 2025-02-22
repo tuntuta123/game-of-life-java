@@ -1,59 +1,48 @@
 package conway;
+import java.util.Random;
 
-public class Demo{
+public class Demo {
 
-	public static void main(String[] args) {
-	
-		Grid grid = new Grid(5);
+    public static void main(String[] args) {
     
-	    Rule rules = new Rule(grid);
-	    
-	    Conway jeu = new Conway(grid);
-	    
-	    jeu.initialize();
-		jeu.printGrid(grid);
-		
-		HashLife algo = new HashLife();
-		
-		for (int gen = 0; gen < 10; gen++) {  
-			System.out.println("Generation " + gen);
-			jeu.runGeneration(grid, algo);
-			jeu.printGrid(grid);  
-	    }
-		
-	    Node node1 = new Node(null, null, null, null, 0, true);
-	    Node node2 = new Node(null, null, null, null, 0, false);
-	    Node node3 = new Node(null, null, null, null, 0, false);
-	    Node node4 = new Node(null, null, null, null, 0, false);
-	    
-	   node1.setNe(node2);
-	   node1.setSw(node3);
-	   node1.setSe(node4);
-	   
-	   node2.setNw(node1);
-	   node2.setSw(node3);
-	   node2.setSe(node4);
-	   
-	   node3.setNw(node1);
-	   node3.setNe(node2);
-	   node3.setSe(node4);
-	   
-	   node4.setNw(node1);
-	   node4.setSw(node3);
-	   node4.setNe(node2);
-	   
-	   Node node0 = new Node(node1, node2, node3, node4, 1, false);
-	   
-	   Node nodetest = algo.getNextState(node0);
-	   System.out.println(nodetest.getNw().isAlive());
-	   System.out.println(nodetest.getSe().isAlive());
-	   System.out.println(nodetest.getSw().isAlive());
-	   System.out.println(nodetest.getNe().isAlive());
-	   
-	   
-	}
-	
+        int width = 10;
+        int height = 10;
+        
+        Grid grid = new Grid(width, height);
+        Random rand = new Random();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (rand.nextDouble() < 0.2) { 
+                    grid.setNode(x, y, true);
+                }
+            }
+        }
+
+        Rule conwayRule = new Conway();
+        HashLifeAlgo hashLifeAlgo = new HashLifeAlgo(grid, conwayRule);
+
+        System.out.println("Initial grid");
+        printGrid(grid);
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Step " + (i + 1));
+            hashLifeAlgo.generate();
+            printGrid(grid);
+        }
+    }
+
+    private static void printGrid(Grid grid) {
+        for (int x = 0; x < grid.getWidth(); x++) {
+            for (int y = 0; y < grid.getHeight(); y++) {
+            	if (grid.getNode(x, y).isAlive())
+                	System.out.print("O");
+                else 
+                	System.out.print(".");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 }
-
-
 

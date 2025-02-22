@@ -1,54 +1,71 @@
 package conway;
 
 public class Grid {
+    private Node[][] grid;
+    private int width;
+    private int height;
 
-	public Cell[][] cells;
-	public int size;
+    public Grid(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.grid = new Node[width][height];
+        this.initializeGrid();
+    }
 
-	public Grid(int s) {
-		this.size = s;
-		this.cells = new Cell[s][s];
-		for(int i = 0; i < s; i ++) {
-			for (int j = 0; j < s; j++) {
-				this.cells[i][j] = new Cell(false, i, j);
-			}
-		}
-	}
-	
-	public int getSize() {
-		return this.size;
-	}
+    private void initializeGrid() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                this.grid[x][y] = new Node(false); 
+            }
+        }
+    }
 
-	public Cell getCell(int x, int y) {
-		return this.cells[x][y];
-	}
-	
-	public void setCell(int x, int y, Cell cell) {
-		this.cells[x][y] = cell;
-	}
-	
-	public int countAliveNeighbours(Cell c){
-		int aliveCount = 0;
-		for (int dx = -1; dx <= 1; dx++) {
-		    for (int dy = -1; dy <= 1; dy++) {
-		        if (dx == 0 && dy == 0) {
-		            continue;
-		        }
+    public Node getNode(int x, int y) {
+        return this.grid[x][y]; 
+    }
 
-		        int neighborX = c.getX() + dx;
-		        int neighborY = c.getY() + dy;
+    public void setNode(int x, int y, boolean alive) {
+        this.grid[x][y].setAlive(alive); 
+    }
 
-		        if (neighborX >= 0 && neighborX < this.size && neighborY >= 0 && neighborY < this.size) {
-		            Cell neighbor = cells[neighborX][neighborY];
-		            if (neighbor.isAlive()) {
-		                aliveCount++;
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void setNeighbors() {
+        for (int x = 0; x < this.width; x++) {
+            for (int y = 0; y < this.height; y++) {
+                Node node = this.grid[x][y];
+                node.setNeighborsNode(this.getNeighbors(x, y));
+            }
+        }
+    }
+
+    private Node[] getNeighbors(int x, int y) {
+        Node[] neighbors = new Node[8];
+        int index = 0;
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx != 0 || dy != 0) {
+
+		            int nx = x + dx;
+		            int ny = y + dy;
+
+		            if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
+		                neighbors[index++] = this.grid[nx][ny];
+		            } else {
+		                neighbors[index++] = null; 
 		            }
 		        }
-		    }
-		}
+            }
+        }
 
-		return aliveCount;
-	}
-
-	
+        return neighbors;
+    }
 }
+
