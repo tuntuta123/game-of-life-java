@@ -9,7 +9,7 @@ public class GridPanel extends JPanel {
 
     public GridPanel(Grid grid) {
         this.grid = grid;
-        setPreferredSize(new Dimension(500, 500)); 
+        setPreferredSize(new Dimension(500, 500));
     }
 
     @Override
