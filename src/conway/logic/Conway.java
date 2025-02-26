@@ -1,4 +1,4 @@
-package conway;
+package conway.logic;
 
 /**
  * La classe Conway implémente l'interface Rule et définit la règle du jeu de la vie de Conway.

@@ -1,4 +1,4 @@
-package conway;
+package conway.logic;
 
 /**
  * L'interface Rule définit une méthode pour appliquer une règle à un noeud 

@@ -1,4 +1,10 @@
-package conway;
+package conway.demo;
+import conway.logic.Grid;
+import conway.logic.Rule;
+import conway.logic.Conway;
+import conway.logic.Node;
+import conway.algo.HashLifeAlgo;
+import conway.graphics.GridPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,12 +36,10 @@ public class Demo extends JFrame {
         this.hashLifeAlgo = new HashLifeAlgo(grid, game);
         this.grid.setNeighbors(); 
 
-        // Configuration de la fenêtre principale
         this.setTitle("Jeu de la vie");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        // Panneau pour afficher la grille
         this.gridPanel = new GridPanel(grid);
         this.add(gridPanel, BorderLayout.CENTER);
 
@@ -93,7 +97,6 @@ public class Demo extends JFrame {
             }
         });
 
-        // Ajout des boutons au panneau
         buttonPanel.add(start);
         buttonPanel.add(next);
         buttonPanel.add(toggleMode);

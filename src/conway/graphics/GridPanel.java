@@ -1,4 +1,6 @@
-package conway;
+package conway.graphics;
+import conway.logic.Grid;
+import conway.logic.Node;
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,8 +13,6 @@ public class GridPanel extends JPanel {
 
     /**
      * Constructeur de la classe GridPanel.
-     * 
-     * Initialise le panneau avec la grille à afficher.
      * 
      * @param grid La grille représentant l'état actuel du jeu de la vie.
      */
