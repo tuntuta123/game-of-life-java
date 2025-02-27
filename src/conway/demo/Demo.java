@@ -9,14 +9,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
+import conway.shapes.*;
 
 /**
  * La classe Demo représente l'interface graphique et la logique de simulation du Jeu de la Vie.
  */
 public class Demo extends JFrame {
 
-    private static final int WIDTH = 10;
-    private static final int HEIGHT = 10;
+    private static final int WIDTH = 30;
+    private static final int HEIGHT = 30;
 
     private Grid grid;
     private HashLifeAlgo hashLifeAlgo;
@@ -52,8 +53,10 @@ public class Demo extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
+                Shapes butterfly = new Lightweight();
                 active = true;
-                startSimulation();
+                butterfly.applyShape(grid, 3,3);
+                gridPanel.repaint(); 
             }
         });
 
@@ -159,7 +162,7 @@ public class Demo extends JFrame {
     }
     
     public static void main(String[] args) {
-        new Demo();  
+        new Demo();
     }
 }
 
