@@ -1,7 +1,5 @@
 package conway.algo;
-import conway.logic.Grid;
-import conway.logic.Node;
-import conway.logic.Rule;
+import conway.logic.*;
 import java.util.Arrays;
 import java.util.HashMap;
 

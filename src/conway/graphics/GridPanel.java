@@ -1,6 +1,5 @@
 package conway.graphics;
-import conway.logic.Grid;
-import conway.logic.Node;
+import conway.logic.*;
 import javax.swing.*;
 import java.awt.*;
 

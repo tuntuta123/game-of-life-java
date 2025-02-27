@@ -1,8 +1,5 @@
 package conway.demo;
-import conway.logic.Grid;
-import conway.logic.Rule;
-import conway.logic.Conway;
-import conway.logic.Node;
+import conway.logic.*;
 import conway.algo.HashLifeAlgo;
 import conway.graphics.GridPanel;
 import javax.swing.*;
