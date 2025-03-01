@@ -16,8 +16,7 @@ import conway.shapes.*;
  */
 public class Demo extends JFrame {
 
-    private static final int WIDTH = 30;
-    private static final int HEIGHT = 30;
+    private int size;
 
     private Grid grid;
     private HashLifeAlgo hashLifeAlgo;
@@ -26,8 +25,9 @@ public class Demo extends JFrame {
     private boolean active = false;
     private boolean manualMode = false; 
 
-    public Demo() {
-        this.grid = new Grid(WIDTH, HEIGHT);
+    public Demo(int size) {
+    	this.size = size;
+        this.grid = new Grid(size,size);
         initializeRandomGrid();  // Initialisation aléatoire de la grille
 
         Rule game = new Conway();
@@ -53,10 +53,11 @@ public class Demo extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                Shapes butterfly = new Lightweight();
+                //Shapes butterfly = new Lightweight();
                 active = true;
-                butterfly.applyShape(grid, 3,3);
-                gridPanel.repaint(); 
+                //butterfly.applyShape(grid, 3,3);
+                //gridPanel.repaint(); 
+                startSimulation();
             }
         });
 
@@ -134,9 +135,9 @@ public class Demo extends JFrame {
      */
     private void initializeRandomGrid() {
         Random rand = new Random();
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                if (rand.nextDouble() < 0.2) {  
+        for (int x = 0; x < this.size; x++) {
+            for (int y = 0; y < this.size; y++) {
+                if (rand.nextDouble() < 0.5) {  
                     grid.setNode(x, y, true);
                 }
             }
@@ -147,8 +148,8 @@ public class Demo extends JFrame {
      * Initialise la grille avec toutes les cellules mortes (inactives).
      */
     private void initializeEmptyGrid() {
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < this.size; x++) {
+            for (int y = 0; y < this.size; y++) {
                 grid.setNode(x, y, false);  
             }
         }
@@ -157,12 +158,9 @@ public class Demo extends JFrame {
     /**
      * Démarre la simulation en configurant les voisins de chaque cellule.
      */
-    private void startSimulation() {
+    public void startSimulation() {
         grid.setNeighbors();  
     }
     
-    public static void main(String[] args) {
-        new Demo();
-    }
 }
 
