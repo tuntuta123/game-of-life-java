@@ -7,24 +7,20 @@ package conway.logic;
 public class Grid extends Node{
 
     private Node[][] grid; 
-    private int width; 
-    private int height;
-
+    private int size;
     /**
      * Constructeur pour initialiser une grille avec une largeur et une hauteur.
      *
-     * @param width La largeur de la grille.
-     * @param height La hauteur de la grille.
+     * @param size La largeur de la grille.
      */
-    public Grid(int width, int height) {
+    public Grid(int size) {
     	super(false);
-        this.width = width;
-        this.height = height;
-        this.grid = new Node[width][height];
+        this.size = size;
+        this.grid = new Node[size][size];
         
         // Initialisation d'une grille seulement avec des cellules mortes.
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
                 this.grid[x][y] = new Node(false); 
             }
         }
@@ -57,25 +53,16 @@ public class Grid extends Node{
      *
      * @return La largeur de la grille.
      */
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Cette méthode récupère la hauteur de la grille.
-     *
-     * @return La hauteur de la grille.
-     */
-    public int getHeight() {
-        return this.height;
+    public int getSize() {
+        return this.size;
     }
 
     /**
      * Cette méthode définit les voisins de chaque noeud dans la grille.
      */
     public void setNeighbors() {
-        for (int x = 0; x < this.width; x++) {
-            for (int y = 0; y < this.height; y++) {
+        for (int x = 0; x < this.size; x++) {
+            for (int y = 0; y < this.size; y++) {
                 Node node = this.grid[x][y];
                 Node[] neighbors = getNeighbors(x, y);
 
@@ -112,7 +99,7 @@ public class Grid extends Node{
                 int ny = y + dy;
 
                 // Vérifie si les coordonnées du voisin sont dans les limites de la grille. Si le voisin est hors limites, le met à null.
-                if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) 
+                if (nx >= 0 && nx < this.size && ny >= 0 && ny < this.size) 
                     neighbors[index++] = this.grid[nx][ny];
                 else 
                     neighbors[index++] = null; 

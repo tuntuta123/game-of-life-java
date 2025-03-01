@@ -1,6 +1,7 @@
 package conway.demo;
+
 import conway.logic.*;
-import conway.algo.HashLifeAlgo;
+import conway.algo.*;
 import conway.graphics.GridPanel;
 import javax.swing.*;
 import java.awt.*;
@@ -9,36 +10,41 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
-import conway.shapes.*;
 
-/**
- * La classe Demo représente l'interface graphique et la logique de simulation du Jeu de la Vie.
- */
 public class Demo extends JFrame {
 
     private int size;
-
     private Grid grid;
     private HashLifeAlgo hashLifeAlgo;
     private GridPanel gridPanel;
     private JButton start, next, toggleMode;
     private boolean active = false;
     private boolean manualMode = false; 
+    private Color liveCellColor;  
+    private Color deadCellColor;
+    private boolean emojisEnabled; 
 
-    public Demo(int size) {
-    	this.size = size;
-        this.grid = new Grid(size,size);
-        initializeRandomGrid();  // Initialisation aléatoire de la grille
+    private enum GridMode { RANDOM, PLAYER_CHOOSES }
+    private GridMode currentMode = GridMode.RANDOM;  
+
+    public Demo(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
+        this.size = size;
+        this.liveCellColor = liveCellColor;
+        this.deadCellColor = deadCellColor;
+        this.emojisEnabled = emojisEnabled;
+
+        this.grid = new Grid(size);
+        initializeRandomGrid(); 
 
         Rule game = new Conway();
         this.hashLifeAlgo = new HashLifeAlgo(grid, game);
-        this.grid.setNeighbors(); 
+        this.grid.setNeighbors();
 
         this.setTitle("Jeu de la vie");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        this.gridPanel = new GridPanel(grid);
+        this.gridPanel = new GridPanel(grid, liveCellColor, deadCellColor, emojisEnabled);
         this.add(gridPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -46,55 +52,39 @@ public class Demo extends JFrame {
 
         this.start = new JButton("Commencer");
         this.start.addActionListener(new ActionListener() {
-            /**
-             * Démarre la simulation du Jeu de la Vie.
-             * 
-             * @param e L'événement généré par le clic sur le bouton "Commencer".
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Shapes butterfly = new Lightweight();
                 active = true;
-                //butterfly.applyShape(grid, 3,3);
-                //gridPanel.repaint(); 
                 startSimulation();
             }
         });
 
         this.next = new JButton("Suivant");
         this.next.addActionListener(new ActionListener() {
-            /**
-             * Passe à l'étape suivante de la simulation et met à jour l'affichage.
-             * 
-             * @param e L'événement généré par le clic sur le bouton "Suivant".
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (active) {
-                    hashLifeAlgo.generate();  
-                    gridPanel.repaint();  
+                    hashLifeAlgo.generate();
+                    gridPanel.repaint();
                 }
             }
         });
 
-        this.toggleMode = new JButton("Utilisateur <--> Aleatoire");
+        this.toggleMode = new JButton("Changer de mode");
         this.toggleMode.addActionListener(new ActionListener() {
-            /**
-             * Bascule entre le mode manuel et automatique.
-             * Si le mode manuel est activé, la grille est initialisée vide.
-             * Si le mode automatique est activé, la grille est initialisée de manière aléatoire.
-             * 
-             * @param e L'événement généré par le clic sur le bouton "Utilisateur <--> Aleatoire".
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
-                manualMode = !manualMode;
-                if (manualMode) {
-                    initializeEmptyGrid();  
-                } else {
-                    initializeRandomGrid();  
+                switch (currentMode) {
+                    case RANDOM:
+                        currentMode = GridMode.PLAYER_CHOOSES;
+                        initializeEmptyGrid();
+                        break;
+                    case PLAYER_CHOOSES:
+                        currentMode = GridMode.RANDOM;
+                        initializeRandomGrid();
+                        break;
                 }
-                gridPanel.repaint(); 
+                gridPanel.repaint();
             }
         });
 
@@ -107,32 +97,22 @@ public class Demo extends JFrame {
         this.setVisible(true);
 
         gridPanel.addMouseListener(new MouseAdapter() {
-            /**
-             * Gère les actions de clic de souris en mode manuel.
-             * Si le mode manuel est activé, l'utilisateur peut cliquer sur les cellules pour les activer ou les désactiver.
-             * 
-             * @param e L'événement généré par le clic de souris sur la grille.
-             */
             @Override
             public void mousePressed(MouseEvent e) {
-                if (manualMode) {
-                    int cellWidth = gridPanel.getWidth() / grid.getWidth();
-                    int cellHeight = gridPanel.getHeight() / grid.getHeight();
+                if (currentMode == GridMode.PLAYER_CHOOSES) {
+                    int cellWidth = gridPanel.getWidth() / grid.getSize();
+                    int cellHeight = gridPanel.getHeight() / grid.getSize();
                     int x = e.getX() / cellWidth;
                     int y = e.getY() / cellHeight;
 
                     Node node = grid.getNode(x, y);
-                    node.setAlive(!node.isAlive());  
-                    gridPanel.repaint();  
+                    node.setAlive(!node.isAlive());
+                    gridPanel.repaint();
                 }
             }
         });
     }
 
-    /**
-     * Initialise la grille avec des cellules vivantes de manière aléatoire.
-     * Chaque cellule a une chance de 20% d'être vivante.
-     */
     private void initializeRandomGrid() {
         Random rand = new Random();
         for (int x = 0; x < this.size; x++) {
@@ -144,23 +124,16 @@ public class Demo extends JFrame {
         }
     }
 
-    /**
-     * Initialise la grille avec toutes les cellules mortes (inactives).
-     */
     private void initializeEmptyGrid() {
         for (int x = 0; x < this.size; x++) {
             for (int y = 0; y < this.size; y++) {
-                grid.setNode(x, y, false);  
+                grid.setNode(x, y, false); 
             }
         }
     }
 
-    /**
-     * Démarre la simulation en configurant les voisins de chaque cellule.
-     */
     public void startSimulation() {
         grid.setNeighbors();  
     }
-    
 }
 

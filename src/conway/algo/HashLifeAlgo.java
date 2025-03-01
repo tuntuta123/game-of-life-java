@@ -30,10 +30,10 @@ public class HashLifeAlgo {
      * Utilise le cache pour mémoriser les états des cellules déjà calculées.
      */
     public void generate() {
-        Grid newGrid = new Grid(grid.getWidth(), grid.getHeight());
+        Grid newGrid = new Grid(grid.getSize());
         grid.setNeighbors();
-        for (int x = 0; x < grid.getWidth(); x++) {
-            for (int y = 0; y < grid.getHeight(); y++) {
+        for (int x = 0; x < grid.getSize(); x++) {
+            for (int y = 0; y < grid.getSize(); y++) {
                 Node current = grid.getNode(x, y);
                 int key = getKey(x, y);
                 Boolean stored = cache.get(key);
@@ -52,8 +52,8 @@ public class HashLifeAlgo {
             }
         }
 
-        for (int x = 0; x < grid.getWidth(); x++) {
-            for (int y = 0; y < grid.getHeight(); y++) {
+        for (int x = 0; x < grid.getSize(); x++) {
+            for (int y = 0; y < grid.getSize(); y++) {
                 grid.setNode(x, y, newGrid.getNode(x, y).isAlive());
             }
         }
