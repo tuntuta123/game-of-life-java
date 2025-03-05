@@ -8,7 +8,7 @@ public class ConwayTest{
     public ConwayTest(){}
     
     public static void runTests(){
-        System.out.println("running tests - conway");
+        System.out.println("\n Running tests - conway");
         
         Conway conway = new Conway();
 
@@ -35,7 +35,6 @@ public class ConwayTest{
  	se.setAlive(false);
         
         grid.setNeighbors();
-        System.out.println("running tests - conway");
         
         assert !conway.applyRule(center) : "Test for applyRule() failed!";
    	assert conway.applyRule(center.getNorthWest()) : "Test for applyRule() failed!";
