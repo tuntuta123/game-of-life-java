@@ -66,14 +66,14 @@ public class Grid extends Node{
                 Node node = this.grid[x][y];
                 Node[] neighbors = getNeighbors(x, y);
 
-                node.setNorthEast(neighbors[0]);
+                node.setNorthWest(neighbors[0]);
                 node.setNorth(neighbors[1]);
-                node.setNorthWest(neighbors[2]);
+                node.setNorthEast(neighbors[2]);
                 node.setWest(neighbors[3]);
                 node.setEast(neighbors[4]);
-                node.setSouthEast(neighbors[5]);
+                node.setSouthWest(neighbors[5]);
                 node.setSouth(neighbors[6]);
-                node.setSouthWest(neighbors[7]);
+                node.setSouthEast(neighbors[7]);
             }
         }
     }
