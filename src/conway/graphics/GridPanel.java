@@ -7,9 +7,9 @@ import java.awt.*;
 public class GridPanel extends JPanel {
 
     private Grid grid;
-    private Color liveCellColor;  // Live cell color
-    private Color deadCellColor;  // Dead cell color
-    private boolean emojisEnabled;  // Emoji flag
+    private Color liveCellColor; 
+    private Color deadCellColor; 
+    private boolean emojisEnabled;  
 
     public GridPanel(Grid grid, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
         this.grid = grid;
@@ -37,7 +37,7 @@ public class GridPanel extends JPanel {
                 Node node = grid.getNode(x, y);
                 
                 if (node.isAlive()) {
-                    g.setColor(liveCellColor);  // Use the selected live cell color
+                    g.setColor(liveCellColor); 
                     if (emojisEnabled) {
                         String emoji = "😊";
                         FontMetrics fm = g.getFontMetrics();
@@ -50,7 +50,7 @@ public class GridPanel extends JPanel {
                         g.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
                     }
                 } else {
-                    g.setColor(deadCellColor);  // Use the selected dead cell color
+                    g.setColor(deadCellColor);  
                     g.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
                 }
                 g.setColor(Color.BLACK);

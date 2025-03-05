@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 public class Menu implements MenuInterface {
 
-    private JFrame frame;
+    public JFrame frame;
     private JPanel panel;
     private String startLabel, rulesLabel, quitLabel;
     private JButton start, rules, quit;
