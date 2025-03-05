@@ -15,25 +15,21 @@ public class SubMenu implements MenuInterface {
     private JSpinner size;
     private JComboBox<ColorItem> liveColor, deadColor;
     private JCheckBox emoji;
-    private JButton back, reset, start;
+    private JButton back, reset, start; 
     private JPanel panel;
-    private JComboBox<String> modeSelect;
-    private JComboBox<String> figureSelect;  
-    private JLabel figureLabel;  
-    private boolean isFigureModeSelected = false; 
 
     private final int defaultSize = 10;
     private final ColorItem defaultLiveColor = new ColorItem(Color.RED, "Red");
-    private final ColorItem defaultDeadColor = new ColorItem(Color.PINK, "Pink");
+    private final ColorItem defaultDeadColor = new ColorItem(Color.WHITE, "Pink");
     private final boolean defaultEmoji = false;
 
     public SubMenu(String title) {
         this.title = title;
         this.frame = new JFrame(title);
-        this.frame.setSize(920, 700);  
+        this.frame.setSize(920, 500);  
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.panel = new JPanel();
-        this.panel.setLayout(null);
+        this.panel.setLayout(null);  
         this.frame.add(this.panel);
         this.placeComponents(this.panel);
     }
@@ -41,19 +37,20 @@ public class SubMenu implements MenuInterface {
     @Override
     public void placeComponents(JPanel panel) {
         JLabel sizeLabel = new JLabel("Choisissez la taille de la grille (3 - 100):");
-        sizeLabel.setBounds(50, 50, 400, 40);
+        sizeLabel.setBounds(50, 50, 400, 40);  
         this.panel.add(sizeLabel);
 
         SpinnerNumberModel spinner = new SpinnerNumberModel(this.defaultSize, 3, 100, 1);
         this.size = new JSpinner(spinner);
-        this.size.setBounds(400, 50, 200, 40);
+        this.size.setBounds(400, 50, 200, 40);  
         this.panel.add(this.size);
 
         JLabel liveLabel = new JLabel("Choisissez la couleur des cellules vivantes:");
-        liveLabel.setBounds(50, 120, 500, 40);
+        liveLabel.setBounds(50, 120, 500, 40);  
         this.panel.add(liveLabel);
 
         List<ColorItem> liveColors = new ArrayList<>();
+        liveColors.add(new ColorItem(Color.PINK, "Rose"));
         liveColors.add(new ColorItem(Color.RED, "Rouge"));
         liveColors.add(new ColorItem(Color.GREEN, "Vert"));
         liveColors.add(new ColorItem(Color.BLUE, "Bleu"));
@@ -61,69 +58,46 @@ public class SubMenu implements MenuInterface {
         liveColors.add(new ColorItem(Color.MAGENTA, "Magenta"));
         liveColors.add(new ColorItem(Color.ORANGE, "Orange"));
         liveColors.add(new ColorItem(Color.CYAN, "Cyan"));
-        liveColors.add(new ColorItem(Color.PINK, "Rose"));
 
-        this.liveColor = new JComboBox<>(liveColors.toArray(new ColorItem[0]));
+        this.liveColor= new JComboBox<>(liveColors.toArray(new ColorItem[0]));
         this.liveColor.setBounds(400, 120, 200, 40);
         this.panel.add(this.liveColor);
 
         JLabel deadLabel = new JLabel("Choisissez la couleur des cellules mortes :");
-        deadLabel.setBounds(50, 190, 500, 40);
+        deadLabel.setBounds(50, 190, 500, 40);  
         this.panel.add(deadLabel);
 
         List<ColorItem> deadColors = new ArrayList<>();
+        deadColors.add(new ColorItem(Color.WHITE, "Blanc"));
         deadColors.add(new ColorItem(Color.GRAY, "Grise"));
         deadColors.add(new ColorItem(Color.LIGHT_GRAY, "Gris clair"));
-        deadColors.add(new ColorItem(Color.WHITE, "Blanc"));
         deadColors.add(new ColorItem(Color.BLACK, "Noir"));
 
         this.deadColor = new JComboBox<>(deadColors.toArray(new ColorItem[0]));
-        this.deadColor.setBounds(400, 190, 200, 40);
+        this.deadColor.setBounds(400, 190, 200, 40);  
         this.panel.add(this.deadColor);
-
+        
         this.emoji = new JCheckBox("Enable Emojis");
         this.emoji.setBounds(50, 270, 300, 40);
         this.panel.add(this.emoji);
 
-        JLabel modeLabel = new JLabel("Choisissez le mode de simulation:");
-        modeLabel.setBounds(50, 340, 500, 40);
-        this.panel.add(modeLabel);
-
-        String[] modes = {"Mode Aléatoire", "Choix des Lieux", "Figures"};
-        modeSelect = new JComboBox<>(modes);
-        modeSelect.setBounds(400, 340, 200, 40);
-        this.panel.add(modeSelect);
-
-        figureSelect = new JComboBox<>();
-        figureSelect.setBounds(400, 390, 200, 40); 
-        figureSelect.setVisible(false);
-        this.panel.add(figureSelect);
-
-        figureLabel = new JLabel("Choisissez la figure souhaitée:");
-        figureLabel.setBounds(50, 390, 500, 40);
-        figureLabel.setVisible(false); 
-        this.panel.add(figureLabel);
-
-        String[] figures = {"Butterfly", "Block", "Cloverleaf", "Glider", "Lightwight", "Pulsar", "Spaceship"};
-        figureSelect.setModel(new DefaultComboBoxModel<>(new String[] {}));
-
         JPanel buttons = new JPanel();
-        buttons.setBounds(5, 470, 900, 100);  
-        buttons.setLayout(new FlowLayout(FlowLayout.LEFT, 40, 20));
+        buttons.setBounds(5, 350, 900, 100);  
+        buttons.setLayout(new FlowLayout(FlowLayout.LEFT, 40, 20)); 
         this.panel.add(buttons);
 
-        Dimension dim = new Dimension(250, 40);
+	Dimension dim = new Dimension(250, 40);
 
         this.back = new JButton("Retour au menu principal");
-        this.back.setPreferredSize(dim);
+        this.back.setPreferredSize(dim);  
         buttons.add(this.back);
 
         this.reset = new JButton("Réinitialiser les paramètres");
-        this.reset.setPreferredSize(dim);
+        this.reset.setPreferredSize(dim);  
         buttons.add(this.reset);
 
         this.start = new JButton("Commencer le jeu");
-        this.start.setPreferredSize(dim);
+        this.start.setPreferredSize(dim);  
         buttons.add(this.start);
 
         this.back.addActionListener(new ActionListener() {
@@ -140,10 +114,6 @@ public class SubMenu implements MenuInterface {
                 liveColor.setSelectedItem(defaultLiveColor);
                 deadColor.setSelectedItem(defaultDeadColor);
                 emoji.setSelected(defaultEmoji);
-                modeSelect.setSelectedIndex(0);  
-                figureSelect.setModel(new DefaultComboBoxModel<>(new String[] {})); 
-                figureSelect.setVisible(false); 
-                figureLabel.setVisible(false); 
             }
         });
 
@@ -157,22 +127,6 @@ public class SubMenu implements MenuInterface {
                 Demo demo = new Demo(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
                 demo.startSimulation();
                 frame.dispose();
-            }
-        });
-        
-        modeSelect.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedMode = (String) modeSelect.getSelectedItem();
-                if ("Figures".equals(selectedMode)) {
-                    figureSelect.setModel(new DefaultComboBoxModel<>(figures)); 
-                    
-                    figureSelect.setVisible(true); 
-                    figureLabel.setVisible(true); 
-                } else {
-                    figureSelect.setModel(new DefaultComboBoxModel<>(new String[] {}));
-                    figureSelect.setVisible(false); 
-                    figureLabel.setVisible(false); 
-                }
             }
         });
     }
