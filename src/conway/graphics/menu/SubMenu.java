@@ -126,6 +126,7 @@ public class SubMenu implements MenuInterface {
 
                 Demo demo = new Demo(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
                 demo.startSimulation();
+                demo.updateAliveCellCount();
                 frame.dispose();
             }
         });

@@ -26,6 +26,7 @@ public class Demo extends JFrame {
     private JToggleButton togle;
     private JSlider speedSlider;
     private JLabel generationLabel, aliveCellLabel;
+    private int generationCount = 0;
     private boolean active = false;
     private boolean manualMode = false;
     private Color liveCellColor;
@@ -60,6 +61,9 @@ public class Demo extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
 
+        this.aliveCellLabel = new JLabel("Cellules vivantesssss ");
+	this.generationLabel = new JLabel("Generation: 0");
+
 //Buttons commencer, suivant, avance(continue d'avance parmi chaque niveaux jusqu'au la  personne clicque le buttons pause), pause, changwr le mode, slider pour le vitesse, retourner d;menu, sortir
         this.start = new JButton("Commencer");
         this.start.addActionListener(new ActionListener() {
@@ -76,6 +80,9 @@ public class Demo extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (active) {
                     hashLifeAlgo.generate();
+            generationCount++;             
+		    updateAliveCellCount();
+            generationLabel.setText("Generation: " + generationCount); 
                     gridPanel.repaint();
                 }
             }
@@ -83,10 +90,13 @@ public class Demo extends JFrame {
         
         this.simulationTimer = new Timer(speed, e -> {
             hashLifeAlgo.generate();
+            generationCount++; 
+            updateAliveCellCount();  
+            generationLabel.setText("Generation: " + generationCount); 
             gridPanel.repaint();
         });
 
-        this.play = new JButton("Avance");
+        this.play = new JButton("Avancer");
         this.play.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,16 +124,23 @@ public class Demo extends JFrame {
                 switch (currentMode) {
                     case RANDOM:
                         currentMode = GridMode.PLAYER_CHOOSES;
+			generationLabel.setText("Generation: 0");
+		        generationCount=0;
 			togle.setText("Random");
                         initializeEmptyGrid();
                         break;
                     case PLAYER_CHOOSES:
                         currentMode = GridMode.RANDOM;
+			generationLabel.setText("Generation: 0");
+		        generationCount=0;
 			togle.setText("Manual");
                         initializeRandomGrid();
                         break;
                 }
+
                 gridPanel.repaint();
+		updateAliveCellCount();
+
             }
         });
 
@@ -138,7 +155,10 @@ public class Demo extends JFrame {
 
                     Node node = grid.getNode(x, y);
                     node.setAlive(!node.isAlive());
+
                     gridPanel.repaint();
+		    updateAliveCellCount();
+
                 }
             }
         });
@@ -177,10 +197,12 @@ public class Demo extends JFrame {
         buttonPanel.add(play);
         buttonPanel.add(stop);
         buttonPanel.add(togle);
-        buttonPanel.add(new JLabel("Speed:"));
+        buttonPanel.add(new JLabel("Vitesse:"));
         buttonPanel.add(speedSlider);
         buttonPanel.add(toMenu);
         buttonPanel.add(exit);
+	buttonPanel.add(aliveCellLabel);
+	buttonPanel.add(generationLabel); 
         this.add(buttonPanel, BorderLayout.NORTH);
 
         this.pack();
@@ -208,6 +230,18 @@ public class Demo extends JFrame {
 
     public void startSimulation() {
         grid.setNeighbors();  
+    }
+
+    public void updateAliveCellCount() {
+        int aliveCount = 0;
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                if (grid.getNode(x, y).isAlive()) {
+                    aliveCount++;
+                }
+            }
+        }
+        aliveCellLabel.setText("Cellules vivantes: " + aliveCount);
     }
 
 }

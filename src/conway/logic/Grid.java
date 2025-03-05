@@ -85,7 +85,7 @@ public class Grid extends Node{
      * @param y est un entier qui représente la coordonnée y du noeud.
      * @return Un tableau contenant les 8 voisins du noeud, ou null si un voisin est en dehors des limites de la grille.
      */
-    private Node[] getNeighbors(int x, int y) {
+    public Node[] getNeighbors(int x, int y) {
         Node[] neighbors = new Node[8];
         int index = 0;
 
