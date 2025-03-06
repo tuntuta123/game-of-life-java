@@ -1,6 +1,7 @@
 package conway.demo;
 
 import conway.logic.*;
+import conway.shapes.*;
 import conway.algo.*;
 import conway.graphics.GridPanel;
 import javax.swing.*;
@@ -13,7 +14,6 @@ import java.util.Random;
 
 import conway.graphics.menu.Menu;
 
-
 //je dois ajouter peut etre compteur de nombre des cellules vivant, de nombre des niveaux, button pour le etat precident, et change le placement de les buttons
 
 public class Demo extends JFrame {
@@ -23,7 +23,10 @@ public class Demo extends JFrame {
     private HashLifeAlgo hashLifeAlgo;
     private GridPanel gridPanel;
     private JButton start, next, play, stop, toMenu, exit;
-    private JToggleButton togle;
+    //Andrea
+    private JComboBox<String> modeComboBox; 
+    private JComboBox<String> figureComboBox; 
+    //Andrea
     private JSlider speedSlider;
     private JLabel generationLabel, aliveCellLabel;
     private int generationCount = 0;
@@ -35,8 +38,8 @@ public class Demo extends JFrame {
     private Timer simulationTimer;
     private int speed = 2000;
 
-    private enum GridMode { RANDOM, PLAYER_CHOOSES }
-    private GridMode currentMode = GridMode.RANDOM;  
+    private enum GridMode { RANDOM, PLAYER_CHOOSES, FIGURES }
+    private GridMode currentMode = GridMode.RANDOM;
 
     public Demo(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
         this.size = size;
@@ -61,10 +64,56 @@ public class Demo extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
 
-        this.aliveCellLabel = new JLabel("Cellules vivantesssss ");
-	this.generationLabel = new JLabel("Generation: 0");
+        this.aliveCellLabel = new JLabel("Cellules vivantes ");
+        this.generationLabel = new JLabel("Generation: 0");
 
-//Buttons commencer, suivant, avance(continue d'avance parmi chaque niveaux jusqu'au la  personne clicque le buttons pause), pause, changwr le mode, slider pour le vitesse, retourner d;menu, sortir
+		//Andrea et Mila
+        String[] modes = {"Random", "Player Chooses", "Figures"};
+        modeComboBox = new JComboBox<>(modes);
+        modeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedMode = (String) modeComboBox.getSelectedItem();
+                switch (selectedMode) {
+                    case "Random":
+                        currentMode = GridMode.RANDOM;
+                        generationLabel.setText("Generation: 0");
+                        generationCount = 0;
+                        initializeRandomGrid();
+                        figureComboBox.setEnabled(false);  
+                        break;
+                    case "Player Chooses":
+                        currentMode = GridMode.PLAYER_CHOOSES;
+                        generationLabel.setText("Generation: 0");
+                        generationCount = 0;
+                        initializeEmptyGrid();
+                        figureComboBox.setEnabled(false);  
+                        break;
+                    case "Figures":
+                        currentMode = GridMode.FIGURES;
+                        generationLabel.setText("Generation: 0");
+                        generationCount = 0;
+                        figureComboBox.setEnabled(true);  
+                        grid.clearGrid();  
+                        break;
+                }
+                gridPanel.repaint();
+                updateAliveCellCount(); 
+            }
+        });
+
+	    //Andrea
+        String[] figures = {"Glider", "Block", "Cloverleaf", "Butterfly", "Lightweight", "Pulsar", "Spaceship"};
+        figureComboBox = new JComboBox<>(figures);
+        figureComboBox.setEnabled(false); 
+        figureComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedFigure = (String) figureComboBox.getSelectedItem();
+            }
+        });
+        //Andrea
+
         this.start = new JButton("Commencer");
         this.start.addActionListener(new ActionListener() {
             @Override
@@ -80,9 +129,9 @@ public class Demo extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (active) {
                     hashLifeAlgo.generate();
-            generationCount++;             
-		    updateAliveCellCount();
-            generationLabel.setText("Generation: " + generationCount); 
+                    generationCount++;             
+                    updateAliveCellCount();
+                    generationLabel.setText("Generation: " + generationCount); 
                     gridPanel.repaint();
                 }
             }
@@ -102,9 +151,9 @@ public class Demo extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (active) {
                     if (!simulationTimer.isRunning()) {
-            	   	 simulationTimer.start();
-			}        
-		}
+                        simulationTimer.start();
+                    }        
+                }
             }
         });
         
@@ -113,34 +162,6 @@ public class Demo extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 simulationTimer.stop();
-            }
-        });
-
-	
-        this.togle = new JToggleButton("Manual");
-        this.togle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (currentMode) {
-                    case RANDOM:
-                        currentMode = GridMode.PLAYER_CHOOSES;
-			generationLabel.setText("Generation: 0");
-		        generationCount=0;
-			togle.setText("Random");
-                        initializeEmptyGrid();
-                        break;
-                    case PLAYER_CHOOSES:
-                        currentMode = GridMode.RANDOM;
-			generationLabel.setText("Generation: 0");
-		        generationCount=0;
-			togle.setText("Manual");
-                        initializeRandomGrid();
-                        break;
-                }
-
-                gridPanel.repaint();
-		updateAliveCellCount();
-
             }
         });
 
@@ -157,32 +178,41 @@ public class Demo extends JFrame {
                     node.setAlive(!node.isAlive());
 
                     gridPanel.repaint();
-		    updateAliveCellCount();
+                    updateAliveCellCount();
+                }
 
+                if (currentMode == GridMode.FIGURES) {
+                    int cellWidth = gridPanel.getWidth() / grid.getSize();
+                    int cellHeight = gridPanel.getHeight() / grid.getSize();
+                    int x = e.getX() / cellWidth;
+                    int y = e.getY() / cellHeight;
+
+                    String selectedFigure = (String) figureComboBox.getSelectedItem();
+                    placeFigureOnGrid(x, y, selectedFigure); 
+                    updateAliveCellCount(); 
                 }
             }
         });
 
         this.speedSlider = new JSlider(1000, 3000, speed);
         this.speedSlider.setMajorTickSpacing(1000);
-	this.speedSlider.setMinorTickSpacing(500); 
+        this.speedSlider.setMinorTickSpacing(500); 
         this.speedSlider.setPaintTicks(true);
         this.speedSlider.setPaintLabels(true);
         this.speedSlider.addChangeListener(e ->  {
-        	speed = speedSlider.getValue();
-        	simulationTimer.setDelay(speed);
-    	});
+            speed = speedSlider.getValue();
+            simulationTimer.setDelay(speed);
+        });
 
-
-	this.toMenu = new JButton("Menu");
-	this.toMenu.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		dispose(); 
-		Menu mainMenu = new Menu("Menu principal", "Commencer le jeu", "Les règles du jeu", "Quitter");
-		mainMenu.display(); 
-	    }
-	});
+        this.toMenu = new JButton("Menu");
+        this.toMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); 
+                Menu mainMenu = new Menu("Menu principal", "Commencer le jeu", "Les règles du jeu", "Quitter");
+                mainMenu.display(); 
+            }
+        });
 
         this.exit = new JButton("Sortir");
         this.exit.addActionListener(new ActionListener() {
@@ -192,17 +222,18 @@ public class Demo extends JFrame {
             }
         });
 
+        buttonPanel.add(modeComboBox);    
+        buttonPanel.add(figureComboBox);
         buttonPanel.add(start);
         buttonPanel.add(next);
         buttonPanel.add(play);
         buttonPanel.add(stop);
-        buttonPanel.add(togle);
         buttonPanel.add(new JLabel("Vitesse:"));
         buttonPanel.add(speedSlider);
         buttonPanel.add(toMenu);
         buttonPanel.add(exit);
-	buttonPanel.add(aliveCellLabel);
-	buttonPanel.add(generationLabel); 
+        buttonPanel.add(aliveCellLabel);
+        buttonPanel.add(generationLabel); 
         this.add(buttonPanel, BorderLayout.NORTH);
 
         this.pack();
@@ -215,6 +246,8 @@ public class Demo extends JFrame {
             for (int y = 0; y < this.size; y++) {
                 if (rand.nextDouble() < 0.5) {  
                     grid.setNode(x, y, true);
+                } else {
+                    grid.setNode(x, y, false);
                 }
             }
         }
@@ -244,5 +277,40 @@ public class Demo extends JFrame {
         aliveCellLabel.setText("Cellules vivantes: " + aliveCount);
     }
 
+    //Andrea
+    private void placeFigureOnGrid(int x, int y, String figure) {
+
+        switch (figure) {
+            case "Glider":
+                Shapes glider = new Glider();
+                glider.applyShape(this.grid,x,y);
+                break;
+            case "Block":
+				Shapes block = new Block();
+                block.applyShape(this.grid,x,y);
+                break;
+            case "Butterfly":
+				Shapes butter = new Butterfly();
+                butter.applyShape(this.grid,x,y);
+                break;
+            case "Lightweight":
+				Shapes lightweight = new Lightweight();
+                lightweight.applyShape(this.grid,x,y);
+                break;
+            case "Cloverleaf":
+				Shapes cloverleaf = new Cloverleaf();
+                cloverleaf.applyShape(this.grid,x,y);
+                break;
+            case "Pulsar":
+				Shapes pulsar = new Pulsar();
+                pulsar.applyShape(this.grid,x,y);
+                break;
+            case "Spaceship":
+				Shapes spaceship = new Spaceship();
+                spaceship.applyShape(this.grid,x,y);
+                break;
+        }
+        gridPanel.repaint();
+    }
 }
 

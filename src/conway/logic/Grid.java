@@ -107,5 +107,12 @@ public class Grid extends Node{
         }
         return neighbors;
     }
+    public void clearGrid() {
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                grid[x][y].setAlive(false); // Met toutes les cellules à mortes
+            }
+        }
+    }
 }
 
