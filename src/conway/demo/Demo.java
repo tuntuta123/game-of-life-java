@@ -42,7 +42,7 @@ public class Demo extends JFrame {
     private GridMode currentMode = GridMode.RANDOM;
 
     public Demo(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
-        this.size = size;
+        this.size = size; 
         this.liveCellColor = liveCellColor;
         this.deadCellColor = deadCellColor;
         this.emojisEnabled = emojisEnabled;
@@ -63,36 +63,36 @@ public class Demo extends JFrame {
         this.add(gridPanel);
 
         this.aliveCellLabel = new JLabel("Cellules vivantes ");
-        this.generationLabel = new JLabel("Generation: 0");
+        this.generationLabel = new JLabel("Génération: 0");
 
 		//Andrea et Mila
-        String[] modes = {"Random", "Player Chooses", "Figures"};
+        String[] modes = {"Aléatoire", "Le joueur choisit", "Figures"};
         modeComboBox = new JComboBox<>(modes);
         modeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedMode = (String) modeComboBox.getSelectedItem();
                 switch (selectedMode) {
-                    case "Random":
+                    case "Aléatoire":
                         currentMode = GridMode.RANDOM;
-                        generationLabel.setText("Generation: 0");
+                        generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         initializeRandomGrid();
                         figureComboBox.setEnabled(false);  
                         break;
-                    case "Player Chooses":
+                    case "Le joueur choisit":
                         currentMode = GridMode.PLAYER_CHOOSES;
-                        generationLabel.setText("Generation: 0");
+                        generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         initializeEmptyGrid();
                         figureComboBox.setEnabled(false);  
                         break;
                     case "Figures":
                         currentMode = GridMode.FIGURES;
-                        generationLabel.setText("Generation: 0");
+                        generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         figureComboBox.setEnabled(true);  
-                        grid.clearGrid();  
+                        initializeEmptyGrid();  
                         break;
                 }
                 gridPanel.repaint();
@@ -129,7 +129,7 @@ public class Demo extends JFrame {
                     hashLifeAlgo.generate();
                     generationCount++;             
                     updateAliveCellCount();
-                    generationLabel.setText("Generation: " + generationCount); 
+                    generationLabel.setText("Génération: " + generationCount); 
                     gridPanel.repaint();
                 }
             }
@@ -139,7 +139,7 @@ public class Demo extends JFrame {
             hashLifeAlgo.generate();
             generationCount++; 
             updateAliveCellCount();  
-            generationLabel.setText("Generation: " + generationCount); 
+            generationLabel.setText("Génération: " + generationCount); 
             gridPanel.repaint();
         });
 
@@ -230,7 +230,7 @@ public class Demo extends JFrame {
         next.setBounds(950, 300, 150, 50);
         play.setBounds(750, 400, 150, 50);
         stop.setBounds(950, 400, 150, 50);
-		  vitesse.setBounds(750, 500, 150, 50);
+		vitesse.setBounds(750, 500, 150, 50);
         speedSlider.setBounds(950, 500, 150, 50);
         toMenu.setBounds(750, 600, 150, 50);
         exit.setBounds(950, 600, 150, 50);

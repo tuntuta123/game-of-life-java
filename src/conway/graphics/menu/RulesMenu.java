@@ -38,7 +38,7 @@ public class RulesMenu implements MenuInterface {
         this.rulesText.setText("Le Jeu de la Vie est un système dynamique inventé par le mathématicien John Horton Conway en 1970.\n" +
                                                "Il repose sur une grille infinie où chaque cellule peut être vivante ou morte. À chaque itération, l'état de chaque cellule est déterminé par ses huit voisines selon les règles suivantes :\n" +
                                                "- une cellule morte avec exactement trois voisins vivants devient vivante (création de nouvelles cellules) \n" + 
-                                               "- une cellule vivante avec deux ou trois voisins vivants continue de vivre, sinon elle meurt (décès par isolement ou surpopulation).");
+                                               "- une cellule vivante avec deux ou trois voisins vivants continue de vivre, sinon elle meurt (décès par isolement ou surpopulation).\n" + "Pour commencer le jeu, vous devez appuyer le bouton 'Commencer', sinon vous ne pourriez pas appuyer sur les autres boutons (suivant, avancer et pause). \n" + "Pour choisir le mode de jeu, vous devez appuyer sur le bouton 'Random' et puis vous pouvez choisir parmis les trois modes : Aléatoire, Le joueur choisit et Figures.");
         this.rulesText.setFont(new Font("Serif", Font.PLAIN, 16));
         this.rulesText.setBounds(250, 100, 700, 250);  
         this.rulesText.setEditable(false); 

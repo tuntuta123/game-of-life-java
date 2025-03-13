@@ -36,13 +36,13 @@ public class SubMenu implements MenuInterface {
 
     @Override
     public void placeComponents(JPanel panel) {
-        JLabel sizeLabel = new JLabel("Choisissez la taille de la grille (3 - 100):");
-        sizeLabel.setBounds(50, 50, 400, 40);  
+        JLabel sizeLabel = new JLabel("Choisissez la taille de la grille entre 3 et 100 (10 par défaut)");
+        sizeLabel.setBounds(50, 50, 500, 50);  
         this.panel.add(sizeLabel);
 
         SpinnerNumberModel spinner = new SpinnerNumberModel(this.defaultSize, 3, 100, 1);
         this.size = new JSpinner(spinner);
-        this.size.setBounds(400, 50, 200, 40);  
+        this.size.setBounds(550, 55, 200, 40);  
         this.panel.add(this.size);
 
         JLabel liveLabel = new JLabel("Choisissez la couleur des cellules vivantes:");
@@ -60,11 +60,11 @@ public class SubMenu implements MenuInterface {
         liveColors.add(new ColorItem(Color.CYAN, "Cyan"));
 
         this.liveColor= new JComboBox<>(liveColors.toArray(new ColorItem[0]));
-        this.liveColor.setBounds(400, 120, 200, 40);
+        this.liveColor.setBounds(550, 120, 200, 40);
         this.panel.add(this.liveColor);
 
         JLabel deadLabel = new JLabel("Choisissez la couleur des cellules mortes :");
-        deadLabel.setBounds(50, 190, 500, 40);  
+        deadLabel.setBounds(50, 195, 500, 40);  
         this.panel.add(deadLabel);
 
         List<ColorItem> deadColors = new ArrayList<>();
@@ -74,7 +74,7 @@ public class SubMenu implements MenuInterface {
         deadColors.add(new ColorItem(Color.BLACK, "Noir"));
 
         this.deadColor = new JComboBox<>(deadColors.toArray(new ColorItem[0]));
-        this.deadColor.setBounds(400, 190, 200, 40);  
+        this.deadColor.setBounds(550, 190, 200, 40);  
         this.panel.add(this.deadColor);
         
         this.emoji = new JCheckBox("Enable Emojis");
