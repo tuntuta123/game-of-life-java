@@ -291,40 +291,82 @@ public class Demo extends JFrame {
         aliveCellLabel.setText("Cellules vivantes: " + aliveCount);
     }
 
-    //Andrea
+        //Andrea
     private void placeFigureOnGrid(int x, int y, String figure) {
+    try {
+        int figureWidth = 0;
+        int figureHeight = 0;
+
+        switch (figure) {
+            case "Glider":
+                figureWidth = 3;
+                figureHeight = 3;
+                break;
+            case "Block":
+                figureWidth = 2;
+                figureHeight = 2;
+                break;
+            case "Butterfly":
+                figureWidth = 5;
+                figureHeight = 5;
+                break;
+            case "Lightweight":
+                figureWidth = 2;
+                figureHeight = 3;
+                break;
+            case "Cloverleaf":
+                figureWidth = 3;
+                figureHeight = 3;
+                break;
+            case "Pulsar":
+                figureWidth = 13;
+                figureHeight = 13;
+                break;
+            case "Spaceship":
+                figureWidth = 5;
+                figureHeight = 5;
+                break;
+        }
+
+        if (x + figureWidth > grid.getSize() || y + figureHeight > grid.getSize()) {
+            throw new ArrayIndexOutOfBoundsException("Il n'y a pas assez de place pour placer la figure.");
+        }
 
         switch (figure) {
             case "Glider":
                 Shapes glider = new Glider();
-                glider.applyShape(this.grid,x,y);
+                glider.applyShape(this.grid, x, y);
                 break;
             case "Block":
-				Shapes block = new Block();
-                block.applyShape(this.grid,x,y);
+                Shapes block = new Block();
+                block.applyShape(this.grid, x, y);
                 break;
             case "Butterfly":
-				Shapes butter = new Butterfly();
-                butter.applyShape(this.grid,x,y);
+                Shapes butter = new Butterfly();
+                butter.applyShape(this.grid, x, y);
                 break;
             case "Lightweight":
-				Shapes lightweight = new Lightweight();
-                lightweight.applyShape(this.grid,x,y);
+                Shapes lightweight = new Lightweight();
+                lightweight.applyShape(this.grid, x, y);
                 break;
             case "Cloverleaf":
-				Shapes cloverleaf = new Cloverleaf();
-                cloverleaf.applyShape(this.grid,x,y);
+                Shapes cloverleaf = new Cloverleaf();
+                cloverleaf.applyShape(this.grid, x, y);
                 break;
             case "Pulsar":
-				Shapes pulsar = new Pulsar();
-                pulsar.applyShape(this.grid,x,y);
+                Shapes pulsar = new Pulsar();
+                pulsar.applyShape(this.grid, x, y);
                 break;
             case "Spaceship":
-				Shapes spaceship = new Spaceship();
-                spaceship.applyShape(this.grid,x,y);
+                Shapes spaceship = new Spaceship();
+                spaceship.applyShape(this.grid, x, y);
                 break;
         }
+        
         gridPanel.repaint();
+    } catch (ArrayIndexOutOfBoundsException e) {
+        JOptionPane.showMessageDialog(this, "Erreur: " + e.getMessage(), "Erreur de placement ", JOptionPane.ERROR_MESSAGE);
     }
+}
 }
 
