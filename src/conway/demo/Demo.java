@@ -20,7 +20,7 @@ public class Demo extends JFrame {
 
     private int size;
     private Grid grid;
-    private HashLifeAlgo hashLifeAlgo;
+    private BasicAlgo hashLifeAlgo;
     private GridPanel gridPanel;
     private JButton start, next, play, stop, toMenu, exit;
     //Andrea
@@ -51,7 +51,7 @@ public class Demo extends JFrame {
         initializeRandomGrid(); 
 
         Rule game = new Conway();
-        this.hashLifeAlgo = new HashLifeAlgo(grid, game);
+        this.hashLifeAlgo = new BasicAlgo(grid, game);
         this.grid.setNeighbors();
 
         this.setTitle("Jeu de la vie");

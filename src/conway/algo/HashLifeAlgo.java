@@ -1,102 +1,90 @@
 package conway.algo;
-import conway.logic.*;
-import java.util.Arrays;
+
 import java.util.HashMap;
+import conway.logic.Node;
+import conway.logic.Grid;
 
-/**
- * La classe HashLifeAlgo implémente l'algorithme HashLife pour simuler le jeu de la vie
- * en utilisant une cache pour améliorer les performances. L'algorithme utilise un HashMap pour mémoriser
- * les états précédents des cellules afin d'éviter les recalculs inutiles.
- */
 public class HashLifeAlgo {
-    private Grid grid;
-    private Rule rule;
-    private HashMap<Integer, Boolean> cache;
+    private static final HashMap<Node, Node> cache = new HashMap<>();
 
-    /**
-     * Constructeur pour initialiser l'algorithme HashLife avec une grille et une règle spécifiée.
-     *
-     * @param grid La grille représentant l'état actuel du jeu.
-     * @param rule La règle utilisée pour déterminer l'état des cellules.
-     */
-    public HashLifeAlgo(Grid grid, Rule rule) {
-        this.grid = grid;
-        this.rule = rule;
-        this.cache = new HashMap<>();
-    }
-
-    /**
-     * Calculer la prochaine génération de cellules en appliquant la règle.
-     * Utilise le cache pour mémoriser les états des cellules déjà calculées.
-     */
-    public void generate() {
-        Grid newGrid = new Grid(grid.getSize());
-        grid.setNeighbors();
-        for (int x = 0; x < grid.getSize(); x++) {
-            for (int y = 0; y < grid.getSize(); y++) {
-                Node current = grid.getNode(x, y);
-                int key = getKey(x, y);
-                Boolean stored = cache.get(key);
-
-                boolean state;
-                if (stored != null) {
-                    // Si l'état du noeud est déjà dans le cache, on l'utilise.
-                    state = stored;
-                } else {
-                    // Sinon, on applique la règle pour calculer l'état du noeud.
-                    state = rule.applyRule(current);
-                    cache.put(key, state); // On mémorise l'état dans le cache.
-                }
-
-                newGrid.setNode(x, y, state);
-            }
+    public Node getNextState(Node node) {
+        if (cache.containsKey(node)) {
+            //System.out.println("containsKey");
+            return cache.get(node);
         }
 
-        for (int x = 0; x < grid.getSize(); x++) {
-            for (int y = 0; y < grid.getSize(); y++) {
-                grid.setNode(x, y, newGrid.getNode(x, y).isAlive());
-            }
+        if (node.isLeaf()) {
+            //System.out.println("node is leaf");
+            return evolve(node);
         }
 
-        grid.setNeighbors();
-    }
+        //System.out.println("getnextstate");
+        Node nextNW = getNextState(node.nw);
+        Node nextNE = getNextState(node.ne);
+        Node nextSW = getNextState(node.sw);
+        Node nextSE = getNextState(node.se);
 
-    /**
-     * Génère un code de hachage unique pour un noeud basé sur son état et celui de ses voisins.
-     *
-     * @param x La coordonnée x du noeud.
-     * @param y La coordonnée y du noeud.
-     * @return Un code de hachage représentant l'état du noeud et de ses voisins.
-     */
-    private int getKey(int x, int y) {
-        Node node = grid.getNode(x, y);
+        /*Node middle = getNextState(Node.create(
+            node.nw.se, node.ne.sw,
+            node.sw.ne, node.se.nw
+        ));*/
         
-        // Création d'un tableau représentant l'état du noeud et de ses voisins.
-        Object[] states = {
-            node.isAlive(), 
-            getNeighborKey(node.getNorth()), 
-            getNeighborKey(node.getSouth()),
-            getNeighborKey(node.getEast()),
-            getNeighborKey(node.getWest()),
-            getNeighborKey(node.getNorthEast()),
-            getNeighborKey(node.getNorthWest()),
-            getNeighborKey(node.getSouthEast()),
-            getNeighborKey(node.getSouthWest())
-        };
-       
-        return Arrays.hashCode(states);
+        if (nextNW == null || nextNE == null || nextSW == null || nextSE == null) {
+        	System.out.println("one of the next state is null");
+    	}
+
+        Node nextNode = Node.create(nextNW, nextNE, nextSW, nextSE);
+
+        cache.put(node, nextNode);
+        return nextNode;
     }
 
-    /**
-     * Retourne 1 si le voisin est vivant, sinon retourne 0.
-     *
-     * @param neighbor Le voisin à vérifier.
-     * @return 1 si le voisin est vivant, sinon 0.
-     */
-    private int getNeighborKey(Node neighbor) {
-    	if (neighbor != null && neighbor.isAlive()) 
-    		return 1;
-    	return 0;
+    private Node evolve(Node node) {
+        boolean nextNW = getNextCellState(node.nw, new Node[]{node.ne, node.sw, node.se});
+        boolean nextNE = getNextCellState(node.ne, new Node[]{node.nw, node.se, node.sw});
+        boolean nextSW = getNextCellState(node.sw, new Node[]{node.nw, node.se, node.ne});
+        boolean nextSE = getNextCellState(node.se, new Node[]{node.ne, node.sw, node.nw});
+
+        return Node.create(new Node(nextNW), new Node(nextNE),
+                           new Node(nextSW), new Node(nextSE));
     }
+
+    private boolean getNextCellState(Node cell, Node[] neighbors) {
+        int aliveNeighbors = 0;
+
+        for (Node neighbor : neighbors) {
+            if (neighbor != null && neighbor.alive) {
+                aliveNeighbors++;
+            }
+        }
+
+        if (cell != null && cell.alive) {
+            return (aliveNeighbors == 2 || aliveNeighbors == 3);
+        } else {
+            return aliveNeighbors == 3;
+        }
+    }
+
+    public void generate(Grid grid) {
+        Node root = grid.toQuadtree();
+        Node nextRoot;
+
+	if (root == null) {
+        	System.out.println("error generate");
+        }
+        if (cache.containsKey(root)) {
+            nextRoot = cache.get(root);
+        } else {
+            nextRoot = getNextState(root);
+            cache.put(root, nextRoot);
+        }
+        
+        if (nextRoot == null) {
+        	System.out.println("error generate .");
+        }
+
+        grid.fromQuadtree(nextRoot);
+    }
+
+    
 }
-

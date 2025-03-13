@@ -1,5 +1,6 @@
 package conway.logic;
-
+import java.util.HashMap;
+import java.util.Objects;
 /**
  * La classe Node représente un noeud dans la grille du jeu de la vie.
  *
@@ -7,7 +8,7 @@ package conway.logic;
  */
 public class Node {
 
-    private boolean alive; 
+    public boolean alive; 
     private Node northEast; 
     private Node northWest; 
     private Node north; 
@@ -22,8 +23,67 @@ public class Node {
      *
      * @param alive est l'état initial du noeud.
      */
+
+    private static final HashMap<Node, Node> uniqueNodes = new HashMap<>();
+    public int level; 
+    
+    
+    public Node nw, ne, sw, se;
+    
+    public Node(Node nw, Node ne, Node sw, Node se, int level, boolean alive) {
+        this.nw = nw;
+        this.ne = ne;
+        this.sw = sw;
+        this.se = se;
+        this.level = level;
+        this.alive = alive;
+    }
+
     public Node(boolean alive) {
         this.alive = alive;
+        this.level = 0;
+        this.nw = this.ne = this.sw = this.se = null;
+    }
+
+
+    public boolean isLeaf() {
+        return level == 0;
+    }
+    
+    public static Node create(Node nw, Node ne, Node sw, Node se) {
+    	Node temp = new Node(nw, ne, sw, se, nw.level + 1, false);
+    
+    	if (uniqueNodes.containsKey(temp)) {
+        	return uniqueNodes.get(temp);
+    	} 
+    	else {
+        	uniqueNodes.put(temp, temp);
+        	return temp;
+    	}
+    }
+    public boolean isEmpty() {
+        if (isLeaf()) {
+            return !alive;
+        }
+        return nw.isEmpty() && ne.isEmpty() && sw.isEmpty() && se.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Node node = (Node) obj;
+        return level == node.level &&
+               alive == node.alive &&
+               Objects.equals(nw, node.nw) &&
+               Objects.equals(ne, node.ne) &&
+               Objects.equals(sw, node.sw) &&
+               Objects.equals(se, node.se);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nw, ne, sw, se, level, alive);
     }
 
     /**

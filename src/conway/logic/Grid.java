@@ -107,12 +107,44 @@ public class Grid extends Node{
         }
         return neighbors;
     }
-    public void clearGrid() {
-        for (int x = 0; x < size; x++) {
-            for (int y = 0; y < size; y++) {
-                grid[x][y].setAlive(false); // Met toutes les cellules à mortes
-            }
-        }
+    
+    public Node toQuadtree() {
+    	return toQuadtree(0, 0, this.getSize()); 
     }
+
+    public Node toQuadtree(int x, int y, int size) {
+    	if (size == 1) {
+        	return new Node(getNode(x, y).isAlive());
+    }
+
+    	int halfSize = size / 2;
+
+    	Node nw = toQuadtree(x, y, halfSize);
+    	Node ne = toQuadtree(x + halfSize, y, halfSize);
+    	Node sw = toQuadtree(x, y + halfSize, halfSize);
+    	Node se = toQuadtree(x + halfSize, y + halfSize, halfSize);
+
+    	return Node.create(nw, ne, sw, se);
+     }
+
+
+    public void fromQuadtree(Node root) {
+       fromQuadtree(root, 0, 0, this.getSize()); 
+    }
+
+    public void fromQuadtree(Node node, int x, int y, int size) {
+        if (node.isLeaf()) {
+        	setNode(x, y, node.isAlive());
+        	return;
+        } 
+
+    	int halfSize = size / 2;
+
+    	fromQuadtree(node.nw, x, y, halfSize);
+    	fromQuadtree(node.ne, x + halfSize, y, halfSize);
+    	fromQuadtree(node.sw, x, y + halfSize, halfSize);
+    	fromQuadtree(node.se, x + halfSize, y + halfSize, halfSize);
+    }
+
 }
 
