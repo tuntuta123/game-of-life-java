@@ -28,7 +28,7 @@ public class Demo extends JFrame {
     private JComboBox<String> figureComboBox; 
     //Andrea
     private JSlider speedSlider;
-    private JLabel generationLabel, aliveCellLabel;
+    private JLabel generationLabel, aliveCellLabel, vitesse;
     private int generationCount = 0;
     private boolean active = false;
     private boolean manualMode = false;
@@ -56,13 +56,11 @@ public class Demo extends JFrame {
 
         this.setTitle("Jeu de la vie");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLayout(new BorderLayout());
+        this.setLayout(null);
 
         this.gridPanel = new GridPanel(grid, liveCellColor, deadCellColor, emojisEnabled);
-        this.add(gridPanel, BorderLayout.CENTER);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
+        gridPanel.setBounds(100, 50, 600, 600); 
+        this.add(gridPanel);
 
         this.aliveCellLabel = new JLabel("Cellules vivantes ");
         this.generationLabel = new JLabel("Generation: 0");
@@ -221,22 +219,38 @@ public class Demo extends JFrame {
                 System.exit(0);
             }
         });
+	
+	this.vitesse = new JLabel("Vitesse:");
 
-        buttonPanel.add(modeComboBox);    
-        buttonPanel.add(figureComboBox);
-        buttonPanel.add(start);
-        buttonPanel.add(next);
-        buttonPanel.add(play);
-        buttonPanel.add(stop);
-        buttonPanel.add(new JLabel("Vitesse:"));
-        buttonPanel.add(speedSlider);
-        buttonPanel.add(toMenu);
-        buttonPanel.add(exit);
-        buttonPanel.add(aliveCellLabel);
-        buttonPanel.add(generationLabel); 
-        this.add(buttonPanel, BorderLayout.NORTH);
+        aliveCellLabel.setBounds(750, 100, 150, 50);
+        generationLabel.setBounds(950, 100, 150, 50);
+        modeComboBox.setBounds(750, 200, 150, 50);
+        figureComboBox.setBounds(950, 200, 150, 50);
+        start.setBounds(750, 300, 150, 50);
+        next.setBounds(950, 300, 150, 50);
+        play.setBounds(750, 400, 150, 50);
+        stop.setBounds(950, 400, 150, 50);
+		  vitesse.setBounds(750, 500, 150, 50);
+        speedSlider.setBounds(950, 500, 150, 50);
+        toMenu.setBounds(750, 600, 150, 50);
+        exit.setBounds(950, 600, 150, 50);
+
+
+        this.add(aliveCellLabel);
+        this.add(generationLabel); 
+        this.add(modeComboBox);  
+        this.add(figureComboBox);
+        this.add(start);
+        this.add(next);
+        this.add(play);
+        this.add(stop);
+        this.add(vitesse);
+        this.add(speedSlider);
+        this.add(toMenu);
+        this.add(exit);
 
         this.pack();
+        this.setSize(1200, 800);
         this.setVisible(true);
     }
 
