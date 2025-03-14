@@ -6,8 +6,8 @@ package conway.logic;
  */
 public class Grid extends Node{
 
-    private Node[][] grid; 
-    private int size;
+    public Node[][] grid; 
+    public int size;
     /**
      * Constructeur pour initialiser une grille avec une largeur et une hauteur.
      *
@@ -107,7 +107,7 @@ public class Grid extends Node{
         }
         return neighbors;
     }
-    
+
     public Node toQuadtree() {
     	return toQuadtree(0, 0, this.getSize()); 
     }

@@ -9,14 +9,14 @@ import java.util.Objects;
 public class Node {
 
     public boolean alive; 
-    private Node northEast; 
-    private Node northWest; 
-    private Node north; 
-    private Node southEast; 
-    private Node southWest; 
-    private Node south; 
-    private Node east; 
-    private Node west; 
+    public Node northEast; 
+    public Node northWest; 
+    public Node north; 
+    public Node southEast; 
+    public Node southWest; 
+    public Node south; 
+    public Node east; 
+    public Node west; 
 
     /**
      * Constructeur pour initialiser un noeud avec son état .
@@ -51,16 +51,18 @@ public class Node {
     }
     
     public static Node create(Node nw, Node ne, Node sw, Node se) {
-    	Node temp = new Node(nw, ne, sw, se, nw.level + 1, false);
-    
+    	int newLevel = (nw != null) ? nw.level + 1 : 0; // Prevent NullPointerException
+    	Node temp = new Node(nw, ne, sw, se, newLevel, false);
+
     	if (uniqueNodes.containsKey(temp)) {
         	return uniqueNodes.get(temp);
-    	} 
-    	else {
+    	} else {
         	uniqueNodes.put(temp, temp);
         	return temp;
-    	}
-    }
+    		}
+	}
+
+    
     public boolean isEmpty() {
         if (isLeaf()) {
             return !alive;
@@ -82,9 +84,14 @@ public class Node {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(nw, ne, sw, se, level, alive);
-    }
+        public int hashCode() {
+            int result = Boolean.hashCode(alive);
+            result = 31 * result + (nw != null ? nw.hashCode() : 0);
+            result = 31 * result + (ne != null ? ne.hashCode() : 0);
+            result = 31 * result + (sw != null ? sw.hashCode() : 0);
+            result = 31 * result + (se != null ? se.hashCode() : 0);
+            return result;
+        }
 
     /**
      * Cette méthode vérifie si le noeud est vivant.

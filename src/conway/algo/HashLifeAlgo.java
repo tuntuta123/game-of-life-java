@@ -1,90 +1,79 @@
 package conway.algo;
 
 import java.util.HashMap;
-import conway.logic.Node;
-import conway.logic.Grid;
+
+import conway.logic.*;
+
+
+//possible errors causing the wrong generation : node levels not correctly initialising, neighbor init's in other classes, wrong recursion (unlikely), 
+
+//conway.java'yi kontrol et oradaki uygulamaya bak. bunu ilk olarak dene sonra digerlerine bak
+
+//ustekkinin faydasi nodelistesi kullanmamasi kodu kisaltiyor ve COK FAZLA yazmaktan olusan potansiyel problemleri ekarte ediyor
+
+//
 
 public class HashLifeAlgo {
     private static final HashMap<Node, Node> cache = new HashMap<>();
+    public Conway rule;
+
+    public HashLifeAlgo() {
+        this.rule = new Conway();
+    }
 
     public Node getNextState(Node node) {
         if (cache.containsKey(node)) {
-            //System.out.println("containsKey");
             return cache.get(node);
         }
 
         if (node.isLeaf()) {
-            //System.out.println("node is leaf");
-            return evolve(node);
+            Node evolvedNode = evolve(node);
+            cache.put(node, evolvedNode);
+            return evolvedNode;
         }
 
-        //System.out.println("getnextstate");
-        Node nextNW = getNextState(node.nw);
-        Node nextNE = getNextState(node.ne);
-        Node nextSW = getNextState(node.sw);
-        Node nextSE = getNextState(node.se);
-
-        /*Node middle = getNextState(Node.create(
-            node.nw.se, node.ne.sw,
-            node.sw.ne, node.se.nw
-        ));*/
-        
-        if (nextNW == null || nextNE == null || nextSW == null || nextSE == null) {
-        	System.out.println("one of the next state is null");
-    	}
+        Node nextNW = (node.nw != null) ? getNextState(node.nw) : null;
+        Node nextNE = (node.ne != null) ? getNextState(node.ne) : null;
+        Node nextSW = (node.sw != null) ? getNextState(node.sw) : null;
+        Node nextSE = (node.se != null) ? getNextState(node.se) : null;
 
         Node nextNode = Node.create(nextNW, nextNE, nextSW, nextSE);
-
         cache.put(node, nextNode);
         return nextNode;
     }
 
-    private Node evolve(Node node) {
-        boolean nextNW = getNextCellState(node.nw, new Node[]{node.ne, node.sw, node.se});
-        boolean nextNE = getNextCellState(node.ne, new Node[]{node.nw, node.se, node.sw});
-        boolean nextSW = getNextCellState(node.sw, new Node[]{node.nw, node.se, node.ne});
-        boolean nextSE = getNextCellState(node.se, new Node[]{node.ne, node.sw, node.nw});
-
-        return Node.create(new Node(nextNW), new Node(nextNE),
-                           new Node(nextSW), new Node(nextSE));
-    }
-
-    private boolean getNextCellState(Node cell, Node[] neighbors) {
-        int aliveNeighbors = 0;
-
-        for (Node neighbor : neighbors) {
-            if (neighbor != null && neighbor.alive) {
-                aliveNeighbors++;
-            }
+    public Node evolve(Node node) {
+        if (node == null) {
+            System.out.println("null node!");
+            return new Node(false); 
         }
 
-        if (cell != null && cell.alive) {
-            return (aliveNeighbors == 2 || aliveNeighbors == 3);
-        } else {
-            return aliveNeighbors == 3;
-        }
+        boolean nextNW = (node.nw != null) && rule.applyRule(node.nw);
+        boolean nextNE = (node.ne != null) && rule.applyRule(node.ne);
+        boolean nextSW = (node.sw != null) && rule.applyRule(node.sw);
+        boolean nextSE = (node.se != null) && rule.applyRule(node.se);
+
+        return Node.create(
+            node.nw != null ? evolve(node.nw) : null,
+            node.ne != null ? evolve(node.ne) : null,
+            node.sw != null ? evolve(node.sw) : null,
+            node.se != null ? evolve(node.se) : null
+        );
     }
 
     public void generate(Grid grid) {
         Node root = grid.toQuadtree();
-        Node nextRoot;
+        if (root == null) {
+            System.out.println("Root node null.");
+            return;
+        }
 
-	if (root == null) {
-        	System.out.println("error generate");
-        }
-        if (cache.containsKey(root)) {
-            nextRoot = cache.get(root);
-        } else {
-            nextRoot = getNextState(root);
-            cache.put(root, nextRoot);
-        }
-        
+        Node nextRoot = getNextState(root);
         if (nextRoot == null) {
-        	System.out.println("error generate .");
+            System.out.println("Next root null.");
+            return;
         }
 
         grid.fromQuadtree(nextRoot);
     }
-
-    
 }
