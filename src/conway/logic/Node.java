@@ -51,9 +51,13 @@ public class Node {
     }
     
     public static Node create(Node nw, Node ne, Node sw, Node se) {
-    	int newLevel = (nw != null) ? nw.level + 1 : 0; // Prevent NullPointerException
+    	int newLevel = (nw != null) ? nw.level + 1 : 0;
     	Node temp = new Node(nw, ne, sw, se, newLevel, false);
-
+	System.out.println("Creating Node: NW=" + (nw != null ? nw.isAlive() : "null") +
+                       ", NE=" + (ne != null ? ne.isAlive() : "null") +
+                       ", SW=" + (sw != null ? sw.isAlive() : "null") +
+                       ", SE=" + (se != null ? se.isAlive() : "null") +
+                       ", newLevel=" + newLevel);
     	if (uniqueNodes.containsKey(temp)) {
         	return uniqueNodes.get(temp);
     	} else {

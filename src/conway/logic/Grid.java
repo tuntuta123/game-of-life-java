@@ -114,6 +114,7 @@ public class Grid extends Node{
 
     public Node toQuadtree(int x, int y, int size) {
     	if (size == 1) {
+    		System.out.println("toQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
         	return new Node(getNode(x, y).isAlive());
     }
 
@@ -135,6 +136,7 @@ public class Grid extends Node{
     public void fromQuadtree(Node node, int x, int y, int size) {
         if (node.isLeaf()) {
         	setNode(x, y, node.isAlive());
+        	System.out.println("fromQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
         	return;
         } 
 
