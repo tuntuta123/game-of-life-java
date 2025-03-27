@@ -1,17 +1,7 @@
 package conway.algo;
 
 import java.util.HashMap;
-
 import conway.logic.*;
-
-
-//possible errors causing the wrong generation : node levels not correctly initialising, neighbor init's in other classes, wrong recursion (unlikely), 
-
-//conway.java'yi kontrol et oradaki uygulamaya bak. bunu ilk olarak dene sonra digerlerine bak
-
-//ustekkinin faydasi nodelistesi kullanmamasi kodu kisaltiyor ve COK FAZLA yazmaktan olusan potansiyel problemleri ekarte ediyor
-
-//
 
 public class HashLifeAlgo {
     private static final HashMap<Node, Node> cache = new HashMap<>();
@@ -22,42 +12,80 @@ public class HashLifeAlgo {
     }
 
     public Node getNextState(Node node) {
+        if (node == null || !node.isAlive()) return node;
+
         if (cache.containsKey(node)) {
             return cache.get(node);
         }
 
-        if (node.isLeaf()) {
-            Node evolvedNode = evolve(node);
-            cache.put(node, evolvedNode);
-            return evolvedNode;
+        if (node.level == 2) {
+            Node result = evolve(node);
+            cache.put(node, result);
+            return result;
         }
 
-        Node nextNW = (node.nw != null) ? getNextState(node.nw) : null;
-        Node nextNE = (node.ne != null) ? getNextState(node.ne) : null;
-        Node nextSW = (node.sw != null) ? getNextState(node.sw) : null;
-        Node nextSE = (node.se != null) ? getNextState(node.se) : null;
+        Node c1 = getNextState(Node.create(node.nw.nw, node.nw.ne, node.nw.sw, node.nw.se));
+        Node c2 = getNextState(Node.create(node.nw.ne, node.ne.nw, node.nw.se, node.ne.sw));
+        Node c3 = getNextState(Node.create(node.ne.nw, node.ne.ne, node.ne.sw, node.ne.se));
 
-        Node nextNode = Node.create(nextNW, nextNE, nextSW, nextSE);
-        cache.put(node, nextNode);
-        return nextNode;
+        Node c4 = getNextState(Node.create(node.nw.sw, node.nw.se, node.sw.nw, node.sw.ne));
+        Node c5 = getNextState(Node.create(node.nw.se, node.ne.sw, node.sw.ne, node.se.nw));
+        Node c6 = getNextState(Node.create(node.ne.sw, node.ne.se, node.se.nw, node.se.ne));
+
+        Node c7 = getNextState(Node.create(node.sw.nw, node.sw.ne, node.sw.sw, node.sw.se));
+        Node c8 = getNextState(Node.create(node.sw.ne, node.se.nw, node.sw.se, node.se.sw));
+        Node c9 = getNextState(Node.create(node.se.nw, node.se.ne, node.se.sw, node.se.se));
+
+        Node result = Node.create(
+            getNextState(Node.create(c1, c2, c4, c5)),
+            getNextState(Node.create(c2, c3, c5, c6)),
+            getNextState(Node.create(c4, c5, c7, c8)),
+            getNextState(Node.create(c5, c6, c8, c9))
+        );
+
+        cache.put(node, result);
+        return result;
     }
 
     public Node evolve(Node node) {
-        if (node == null) {
-            System.out.println("null node!");
-            return new Node(false); 
-        }
+        return life4x4(node);
+    }
 
-        boolean nextNW = (node.nw != null) && rule.applyRule(node.nw);
-        boolean nextNE = (node.ne != null) && rule.applyRule(node.ne);
-        boolean nextSW = (node.sw != null) && rule.applyRule(node.sw);
-        boolean nextSE = (node.se != null) && rule.applyRule(node.se);
+    private Node life4x4(Node m) {
+        Node a = m.nw;
+        Node b = m.ne;
+        Node c = m.sw;
+        Node d = m.se;
+
+        boolean ad = rule.evaluateCell(
+            a.nw.alive, a.ne.alive, b.nw.alive,
+            a.sw.alive, a.se.alive, b.sw.alive,
+            c.nw.alive, c.ne.alive, d.nw.alive
+        );
+
+        boolean bc = rule.evaluateCell(
+            a.ne.alive, b.nw.alive, b.ne.alive,
+            a.se.alive, b.sw.alive, b.se.alive,
+            c.ne.alive, d.nw.alive, d.ne.alive
+        );
+
+        boolean cb = rule.evaluateCell(
+            c.nw.alive, c.ne.alive, d.nw.alive,
+            c.sw.alive, c.se.alive, d.sw.alive,
+            c.sw.alive, c.se.alive, d.sw.alive
+        );
+
+        boolean da = rule.evaluateCell(
+            c.ne.alive, d.nw.alive, d.ne.alive,
+            c.se.alive, d.sw.alive, d.se.alive,
+            c.se.alive, d.sw.alive, d.se.alive
+        );
 
         return Node.create(
-            node.nw != null ? evolve(node.nw) : null,
-            node.ne != null ? evolve(node.ne) : null,
-            node.sw != null ? evolve(node.sw) : null,
-            node.se != null ? evolve(node.se) : null
+            new Node(ad),
+            new Node(bc),
+            new Node(cb),
+            new Node(da)
         );
     }
 

@@ -51,20 +51,36 @@ public class Node {
     }
     
     public static Node create(Node nw, Node ne, Node sw, Node se) {
-    	int newLevel = (nw != null) ? nw.level + 1 : 0;
-    	Node temp = new Node(nw, ne, sw, se, newLevel, false);
-	System.out.println("Creating Node: NW=" + (nw != null ? nw.isAlive() : "null") +
+    int newLevel = (nw != null) ? nw.level + 1 : 0;
+    
+    boolean isAlive = (nw != null && nw.isAlive()) ||
+                      (ne != null && ne.isAlive()) ||
+                      (sw != null && sw.isAlive()) ||
+                      (se != null && se.isAlive());
+
+    Node temp = new Node(nw, ne, sw, se, newLevel, isAlive);
+
+    System.out.println("Creating Node: NW=" + (nw != null ? nw.isAlive() : "null") +
                        ", NE=" + (ne != null ? ne.isAlive() : "null") +
                        ", SW=" + (sw != null ? sw.isAlive() : "null") +
                        ", SE=" + (se != null ? se.isAlive() : "null") +
-                       ", newLevel=" + newLevel);
-    	if (uniqueNodes.containsKey(temp)) {
-        	return uniqueNodes.get(temp);
-    	} else {
-        	uniqueNodes.put(temp, temp);
-        	return temp;
-    		}
-	}
+                       ", newLevel=" + newLevel +
+                       ", isAlive=" + isAlive);
+
+    if (uniqueNodes.containsKey(temp)) {
+        return uniqueNodes.get(temp);
+    } else {
+        uniqueNodes.put(temp, temp);
+        return temp;
+    }
+}
+
+public static Node center(Node node) {
+    if (node == null || node.level < 2) {
+        return null;
+    }
+    return Node.create(node.nw.se, node.ne.sw, node.sw.ne, node.se.nw);
+}
 
     
     public boolean isEmpty() {
@@ -258,5 +274,6 @@ public class Node {
     public void setWest(Node west) {
         this.west = west;
     }
+
 }
 
