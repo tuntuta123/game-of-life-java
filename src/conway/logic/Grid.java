@@ -4,7 +4,7 @@ package conway.logic;
  * La classe Grid représente une grille de noeuds pour le jeu de la vie.
  * Chaque cellule peut être vivante ou morte, et cette classe contient des méthodes pour manipuler les cellules.
  */
-public class Grid extends Node{
+public class Grid{
 
     public Node[][] grid; 
     public int size;
@@ -14,8 +14,8 @@ public class Grid extends Node{
      * @param size La largeur de la grille.
      */
     public Grid(int size) {
-    	super(false);
-        this.size = size;
+    	/*super(false);*/
+        this.size = 8;
         this.grid = new Node[size][size];
         
         // Initialisation d'une grille seulement avec des cellules mortes.

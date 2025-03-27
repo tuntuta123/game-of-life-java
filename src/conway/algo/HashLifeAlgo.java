@@ -70,14 +70,14 @@ public class HashLifeAlgo {
         );
 
         boolean cb = rule.evaluateCell(
+            a.sw.alive, a.se.alive, b.sw.alive,
             c.nw.alive, c.ne.alive, d.nw.alive,
-            c.sw.alive, c.se.alive, d.sw.alive,
             c.sw.alive, c.se.alive, d.sw.alive
         );
 
         boolean da = rule.evaluateCell(
+            a.se.alive, b.sw.alive, b.se.alive,
             c.ne.alive, d.nw.alive, d.ne.alive,
-            c.se.alive, d.sw.alive, d.se.alive,
             c.se.alive, d.sw.alive, d.se.alive
         );
 
