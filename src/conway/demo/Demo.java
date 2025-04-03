@@ -18,28 +18,28 @@ import conway.graphics.menu.Menu;
 
 public class Demo extends JFrame {
 
-    private int size;
-    private Grid grid;
-    private HashLifeAlgo hashLifeAlgo;
-    private GridPanel gridPanel;
-    private JButton start, next, play, stop, toMenu, exit;
+    public  int size;
+    public Grid grid;
+    public HashLifeAlgo hashLifeAlgo;
+    public GridPanel gridPanel;
+    public JButton start, next, play, stop, toMenu, exit;
     //Andrea
-    private JComboBox<String> modeComboBox; 
-    private JComboBox<String> figureComboBox; 
+    public JComboBox<String> modeComboBox; 
+    public JComboBox<String> figureComboBox; 
     //Andrea
-    private JSlider speedSlider;
-    private JLabel generationLabel, aliveCellLabel, vitesse;
-    private int generationCount = 0;
-    private boolean active = false;
-    private boolean manualMode = false;
-    private Color liveCellColor;
-    private Color deadCellColor;
-    private boolean emojisEnabled;
-    private Timer simulationTimer;
-    private int speed = 2000;
+    public JSlider speedSlider;
+    public JLabel generationLabel, aliveCellLabel, vitesse;
+    public int generationCount = 0;
+    public boolean active = false;
+    public boolean manualMode = false;
+    public Color liveCellColor;
+    public Color deadCellColor;
+    public boolean emojisEnabled;
+    public Timer simulationTimer;
+    public int speed = 2000;
 
-    private enum GridMode { RANDOM, PLAYER_CHOOSES, FIGURES }
-    private GridMode currentMode = GridMode.RANDOM;
+    public enum GridMode { RANDOM, PLAYER_CHOOSES, FIGURES }
+    public GridMode currentMode = GridMode.RANDOM;
 
     public Demo(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
         this.size = size; 
@@ -254,7 +254,7 @@ public class Demo extends JFrame {
         this.setVisible(true);
     }
 
-    private void initializeRandomGrid() {
+    public void initializeRandomGrid() {
         Random rand = new Random();
         for (int x = 0; x < this.size; x++) {
             for (int y = 0; y < this.size; y++) {
@@ -267,7 +267,7 @@ public class Demo extends JFrame {
         }
     }
 
-    private void initializeEmptyGrid() {
+    public void initializeEmptyGrid() {
         for (int x = 0; x < this.size; x++) {
             for (int y = 0; y < this.size; y++) {
                 grid.setNode(x, y, false); 
@@ -292,7 +292,7 @@ public class Demo extends JFrame {
     }
 
         //Andrea
-    private void placeFigureOnGrid(int x, int y, String figure) {
+    public void placeFigureOnGrid(int x, int y, String figure) {
     try {
         int figureWidth = 0;
         int figureHeight = 0;

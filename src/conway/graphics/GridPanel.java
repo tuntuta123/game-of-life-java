@@ -25,6 +25,14 @@ public class GridPanel extends JPanel {
         drawGrid(g); 
     }
 
+	public Color getCellAlive(){
+			return this.liveCellColor;
+	}
+	public Color getCellDead(){
+			return this.deadCellColor;
+	}
+
+
     private void drawGrid(Graphics g) {
         int cellWidth = getWidth() / grid.getSize();  
         int cellHeight = getHeight() / grid.getSize(); 
