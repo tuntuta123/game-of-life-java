@@ -5,7 +5,7 @@
     <property name="src.dir" value="src"/>
     <property name="build.dir" value="build"/>
     <property name="dist.dir" value="dist"/>
-    <property name="main.class" value="conway.graphics.menu.Menu"/>
+    <property name="main.class" value="conway.demo.TerminalDemo"/>
 
 
     <target name="clean">

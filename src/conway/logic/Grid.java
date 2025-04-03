@@ -15,7 +15,7 @@ public class Grid{
      */
     public Grid(int size) {
     	/*super(false);*/
-        this.size = 8;
+        this.size = size;
         this.grid = new Node[size][size];
         
         // Initialisation d'une grille seulement avec des cellules mortes.
@@ -113,16 +113,19 @@ public class Grid{
     }
 
     public Node toQuadtree(int x, int y, int size) {
+
     	if (size == 1) {
     		System.out.println("toQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
         	return new Node(getNode(x, y).isAlive());
     }
-
+	System.out.println("toQuadtree size " + size);
     	int halfSize = size / 2;
 
+	/*correctly itarates thru*/
+
     	Node nw = toQuadtree(x, y, halfSize);
-    	Node ne = toQuadtree(x + halfSize, y, halfSize);
-    	Node sw = toQuadtree(x, y + halfSize, halfSize);
+    	Node ne = toQuadtree(x, y+ halfSize, halfSize);
+    	Node sw = toQuadtree(x+ halfSize, y , halfSize);
     	Node se = toQuadtree(x + halfSize, y + halfSize, halfSize);
 
     	return Node.create(nw, ne, sw, se);
@@ -135,16 +138,18 @@ public class Grid{
 
     public void fromQuadtree(Node node, int x, int y, int size) {
         if (node.isLeaf()) {
+        	System.out.println("fromQuadtree size " + size);
+        	
         	setNode(x, y, node.isAlive());
         	System.out.println("fromQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
         	return;
         } 
-
+	System.out.println("fromQuadtree size " + size);
     	int halfSize = size / 2;
 
     	fromQuadtree(node.nw, x, y, halfSize);
-    	fromQuadtree(node.ne, x + halfSize, y, halfSize);
-    	fromQuadtree(node.sw, x, y + halfSize, halfSize);
+    	fromQuadtree(node.ne, x , y+ halfSize, halfSize);
+    	fromQuadtree(node.sw, x+ halfSize, y , halfSize);
     	fromQuadtree(node.se, x + halfSize, y + halfSize, halfSize);
     }
 

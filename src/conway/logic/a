@@ -1,0 +1,19 @@
+public void fromQuadtree(Node node, int x, int y, int size) {
+    if (node.isLeaf()) {
+        for (int i = 1; i < 3; i++) {
+            for (int j = 1; j < 3; j++) {
+                setNode(x + i, y + j, node.isAlive());
+                System.out.println("fromQuadtree: x=" + (x + i) + ", y=" + (y + j) + ", size=" + size + ", alive=" + getNode(x + i, y + j).isAlive());
+            }
+        }
+        return;
+    }
+
+    System.out.println("fromQuadtree size " + size);
+    int halfSize = size / 2;
+
+    fromQuadtree(node.nw, x, y, halfSize);
+    fromQuadtree(node.ne, x, y + halfSize, halfSize);
+    fromQuadtree(node.sw, x + halfSize, y, halfSize);
+    fromQuadtree(node.se, x + halfSize, y + halfSize, halfSize);
+}
