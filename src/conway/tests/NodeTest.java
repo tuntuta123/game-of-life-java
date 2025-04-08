@@ -15,7 +15,7 @@ public class NodeTest {
         System.out.println("Tout tests por le Node sont passé \n");
     }
 
-// test pour le fonction isAlive() et setAlive()
+	// test pour le fonction isAlive() et setAlive()
     public void testAliveState() {
         Node node = new Node(true);  
         assert node.isAlive() : "Node doit etre vivant!";
@@ -26,47 +26,47 @@ public class NodeTest {
         System.out.println("[ setAlive() ] est passé");
 }
 
-// tests pour les voisin d'un cellule
+	// tests pour les voisin d'un cellule
     public void testNeighbors() {
         System.out.println("\n Testing Neighbors");
         Node node = new Node(false);
 
-	Node north = new Node(true);
+		Node north = new Node(true);
         node.setNorth(north);
     	assert node.getNorth() == north : "setNorth() ou getNorth() échoué! Le voisin nord du noeud doit être 'nord'.";
 
-	Node west = new Node(false);
+		Node west = new Node(false);
         node.setWest(west);
     	assert node.getWest() == west : "setWest() ou getWest() échoué! Le voisin ouest du noeud doit être 'ouest'.";
 
-	Node east = new Node(true);
+		Node east = new Node(true);
         node.setEast(east);
     	assert node.getEast() == east : "setEast() or getEast() échoué! Le voisin ouest du noeud doit être 'ouest'.";
 
-	Node south = new Node(true);
+		Node south = new Node(true);
         node.setSouth(south);
     	assert node.getSouth() == south : "setSouth() ou getSouth() échoué! Le voisin sud du noeud doit être 'sud'.";
 
-	Node northEast = new Node(false);
+		Node northEast = new Node(false);
         node.setNorthEast(northEast);
     	assert node.getNorthEast() == northEast : "setNorthEast() ou getNorthEast() échoué! Le voisin nord-est du noeud doit être 'nord-est'.";
 
-	Node northWest = new Node(true);
+		Node northWest = new Node(true);
         node.setNorthWest(northWest);
     	assert node.getNorthWest() == northWest : "setNorthWest() ou getNorthWest() échoué! Le voisin nord-ouest du noeud doit être 'nord-ouest'.";
 
-	Node southEast = new Node(false);
+		Node southEast = new Node(false);
         node.setSouthEast(southEast);
     	assert node.getSouthEast() == southEast : "setSouthEast() ou getSouthEast() échoué! Le voisin sud-est du noeud doit être 'sud-est'.";
 
-	Node southWest = new Node(true);
+		Node southWest = new Node(true);
         node.setSouthWest(southWest);
     	assert node.getSouthWest() == southWest : "setSouthWest() ou getSouthWest() échoué! Le voisin sud-ouest du noeud doit être 'sud-ouest'.";
 
         System.out.println("[ Tout 8 voisins tests sont passé ]");
     }
 
-// tests pour les 4 corners
+	// tests pour les 4 corners
     public void testCorners() {
         System.out.println("\n Testing Corners");
 
