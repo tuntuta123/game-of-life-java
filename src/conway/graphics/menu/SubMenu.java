@@ -10,18 +10,18 @@ import java.util.List;
 
 public class SubMenu implements MenuInterface {
 
-    private JFrame frame;
-    private String title;
-    private JSpinner size;
-    private JComboBox<ColorItem> liveColor, deadColor;
-    private JCheckBox emoji;
-    private JButton back, reset, start; 
-    private JPanel panel;
+    public JFrame frame;
+    public String title;
+    public JSpinner size;
+    public JComboBox<ColorItem> liveColor, deadColor;
+    public JCheckBox emoji;
+    public JButton back, reset, start; 
+    public JPanel panel;
 
-    private final int defaultSize = 10;
-    private final ColorItem defaultLiveColor = new ColorItem(Color.RED, "Red");
-    private final ColorItem defaultDeadColor = new ColorItem(Color.WHITE, "Pink");
-    private final boolean defaultEmoji = false;
+    public final int defaultSize = 10;
+    public final ColorItem defaultLiveColor = new ColorItem(Color.RED, "Red");
+    public final ColorItem defaultDeadColor = new ColorItem(Color.WHITE, "Pink");
+    public final boolean defaultEmoji = false;
 
     public SubMenu(String title) {
         this.title = title;

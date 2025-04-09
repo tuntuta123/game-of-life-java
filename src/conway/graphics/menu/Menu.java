@@ -7,10 +7,10 @@ import java.awt.event.*;
 public class Menu implements MenuInterface {
 
     public JFrame frame;
-    private JPanel panel;
-    private String startLabel, rulesLabel, quitLabel;
-    private JButton start, rules, quit;
-    private JLabel title; 
+    public JPanel panel;
+    public String startLabel, rulesLabel, quitLabel;
+    public JButton start, rules, quit;
+    public JLabel title; 
 
     public Menu(String mainWindowTitle, String startLabel, String rulesLabel, String quitLabel) {
         this.startLabel = startLabel;

@@ -6,15 +6,15 @@ import java.awt.event.*;
 
 public class RulesMenu implements MenuInterface {
 
-    private JFrame frame;
-    private String title;
-    private JPanel panel;
-    private JLabel titleLabel;
-    private JTextPane rulesText;
-    private ImageIcon image1, image2;
-    private JLabel imgLabel1, imgLabel2;
-    private JLabel step1, step2;
-    private JButton back;
+    public JFrame frame;
+    public String title;
+    public JPanel panel;
+    public JLabel titleLabel;
+    public JTextPane rulesText;
+    public ImageIcon image1, image2;
+    public JLabel imgLabel1, imgLabel2;
+    public JLabel step1, step2;
+    public JButton back;
 
     public RulesMenu(String title) {
         this.title = title;
