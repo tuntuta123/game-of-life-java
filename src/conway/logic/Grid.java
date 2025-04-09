@@ -138,17 +138,17 @@ public class Grid{
 
     public void fromQuadtree(Node node, int x, int y, int size) {
         if (node.isLeaf()) {
-            System.out.println("fromQuadtree size " + size);
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    System.out.println("fromQuadtree: x=" + (x+j) + ", y=" + (y+i) + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
-                        setNode(x + j, y + i, node.isAlive());
-                }
-            }
-            
-            return;
+        System.out.println("fromQuadtree size " + size);
+        for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+		    Node leaf = getLeafAt(node, j, i, size);
+		    System.out.println("fromQuadtree: x=" + (x + j) + ", y=" + (y + i) + ", alive=" + leaf.isAlive());
+		    setNode(x + j, y + i, leaf.isAlive());
+		}
         }
-    System.out.println("fromQuadtree size " + size);
+        return;
+    }
+    	System.out.println("fromQuadtree size " + size);
         int halfSize = size / 2;
 
         fromQuadtree(node.nw, x, y, halfSize);
@@ -156,6 +156,22 @@ public class Grid{
         fromQuadtree(node.sw, x+ halfSize, y , halfSize);
         fromQuadtree(node.se, x + halfSize, y + halfSize, halfSize);
     }
-    
+    public Node getLeafAt(Node node, int i, int j, int size) {
+        if (node == null) return new Node(false);
+
+        if (node.level == 0) return node;
+
+        int half = size / 2;
+
+        if (i < half && j < half) {
+        return getLeafAt(node.nw, i, j, half);
+        } else if (i < half && j >= half) {
+        return getLeafAt(node.ne, i, j - half, half);
+        } else if (i >= half && j < half) {
+        return getLeafAt(node.sw, i - half, j, half);
+        } else {
+        return getLeafAt(node.se, i - half, j - half, half);
+        }
+    }
 
 }
