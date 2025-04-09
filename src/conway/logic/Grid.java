@@ -6,7 +6,7 @@ package conway.logic;
  */
 public class Grid{
 
-    public Node[][] grid; 
+    public Node[][] grid;
     public int size;
     /**
      * Constructeur pour initialiser une grille avec une largeur et une hauteur.
@@ -14,14 +14,14 @@ public class Grid{
      * @param size La largeur de la grille.
      */
     public Grid(int size) {
-    	/*super(false);*/
+        /*super(false);*/
         this.size = size;
         this.grid = new Node[size][size];
         
         // Initialisation d'une grille seulement avec des cellules mortes.
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                this.grid[x][y] = new Node(false); 
+                this.grid[x][y] = new Node(false);
             }
         }
     }
@@ -34,7 +34,7 @@ public class Grid{
      * @return Le noeud qui se trouve à la position (x, y).
      */
     public Node getNode(int x, int y) {
-        return this.grid[x][y]; 
+        return this.grid[x][y];
     }
 
     /**
@@ -45,7 +45,7 @@ public class Grid{
      * @param alive est un boolean qui représente l'état à attribuer au noeud (true ---> vivant, false ---> mort).
      */
     public void setNode(int x, int y, boolean alive) {
-        this.grid[x][y].setAlive(alive); 
+        this.grid[x][y].setAlive(alive);
     }
 
     /**
@@ -92,66 +92,70 @@ public class Grid{
         // Parcours des voisins dans un rayon de 1 autour du noeud courant.
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                if (dx == 0 && dy == 0) 
+                if (dx == 0 && dy == 0)
                     continue; // Ignore si c'est le noeud lui-même.
 
                 int nx = x + dx;
                 int ny = y + dy;
 
                 // Vérifie si les coordonnées du voisin sont dans les limites de la grille. Si le voisin est hors limites, le met à null.
-                if (nx >= 0 && nx < this.size && ny >= 0 && ny < this.size) 
+                if (nx >= 0 && nx < this.size && ny >= 0 && ny < this.size)
                     neighbors[index++] = this.grid[nx][ny];
-                else 
-                    neighbors[index++] = null; 
+                else
+                    neighbors[index++] = null;
             }
         }
         return neighbors;
     }
 
     public Node toQuadtree() {
-    	return toQuadtree(0, 0, this.getSize()); 
+        return toQuadtree(0, 0, this.getSize());
     }
 
     public Node toQuadtree(int x, int y, int size) {
 
-    	if (size == 1) {
-    		System.out.println("toQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
-        	return new Node(getNode(x, y).isAlive());
+        if (size == 1) {
+            System.out.println("toQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
+            return new Node(getNode(x, y).isAlive());
     }
-	System.out.println("toQuadtree size " + size);
-    	int halfSize = size / 2;
+    System.out.println("toQuadtree size " + size);
+        int halfSize = size / 2;
 
-	/*correctly itarates thru*/
+    /*correctly itarates thru*/
 
-    	Node nw = toQuadtree(x, y, halfSize);
-    	Node ne = toQuadtree(x, y+ halfSize, halfSize);
-    	Node sw = toQuadtree(x+ halfSize, y , halfSize);
-    	Node se = toQuadtree(x + halfSize, y + halfSize, halfSize);
+        Node nw = toQuadtree(x, y, halfSize);
+        Node ne = toQuadtree(x, y+ halfSize, halfSize);
+        Node sw = toQuadtree(x+ halfSize, y , halfSize);
+        Node se = toQuadtree(x + halfSize, y + halfSize, halfSize);
 
-    	return Node.create(nw, ne, sw, se);
+        return Node.create(nw, ne, sw, se);
      }
 
 
     public void fromQuadtree(Node root) {
-       fromQuadtree(root, 0, 0, this.getSize()); 
+       fromQuadtree(root, 0, 0, this.getSize());
     }
 
     public void fromQuadtree(Node node, int x, int y, int size) {
         if (node.isLeaf()) {
-        	System.out.println("fromQuadtree size " + size);
-        	
-        	setNode(x, y, node.isAlive());
-        	System.out.println("fromQuadtree: x=" + x + ", y=" + y + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
-        	return;
-        } 
-	System.out.println("fromQuadtree size " + size);
-    	int halfSize = size / 2;
+            System.out.println("fromQuadtree size " + size);
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    System.out.println("fromQuadtree: x=" + (x+j) + ", y=" + (y+i) + ", size=" + size + ", alive=" + getNode(x, y).isAlive());
+                        setNode(x + j, y + i, node.isAlive());
+                }
+            }
+            
+            return;
+        }
+    System.out.println("fromQuadtree size " + size);
+        int halfSize = size / 2;
 
-    	fromQuadtree(node.nw, x, y, halfSize);
-    	fromQuadtree(node.ne, x , y+ halfSize, halfSize);
-    	fromQuadtree(node.sw, x+ halfSize, y , halfSize);
-    	fromQuadtree(node.se, x + halfSize, y + halfSize, halfSize);
+        fromQuadtree(node.nw, x, y, halfSize);
+        fromQuadtree(node.ne, x , y+ halfSize, halfSize);
+        fromQuadtree(node.sw, x+ halfSize, y , halfSize);
+        fromQuadtree(node.se, x + halfSize, y + halfSize, halfSize);
     }
+    
 
 }
-
