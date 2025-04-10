@@ -14,8 +14,6 @@ import java.util.Random;
 
 import conway.graphics.menu.Menu;
 
-//je dois ajouter peut etre compteur de nombre des cellules vivant, de nombre des niveaux, button pour le etat precident, et change le placement de les buttons
-
 public class Demo extends JFrame {
 
     private int size;
@@ -37,9 +35,11 @@ public class Demo extends JFrame {
     private boolean emojisEnabled;
     private Timer simulationTimer;
     private int speed = 2000;
+    private JComboBox<String> puzzleFigureComboBox; //Puzzle mode
 
-    private enum GridMode { RANDOM, PLAYER_CHOOSES, FIGURES }
+    private enum GridMode { RANDOM, PLAYER_CHOOSES, FIGURES, PUZZLE } //Puzzle mode
     private GridMode currentMode = GridMode.RANDOM;
+    private PuzzleChallenge puzzleChallenge; //Puzzle mode
 
     public Demo(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
         this.size = size; 
@@ -59,14 +59,14 @@ public class Demo extends JFrame {
         this.setLayout(null);
 
         this.gridPanel = new GridPanel(grid, liveCellColor, deadCellColor, emojisEnabled);
-        gridPanel.setBounds(100, 50, 600, 600); 
+        gridPanel.setBounds(100, 25, 700, 700);
         this.add(gridPanel);
 
         this.aliveCellLabel = new JLabel("Cellules vivantes ");
         this.generationLabel = new JLabel("Génération: 0");
 
 		//Andrea et Mila
-        String[] modes = {"Aléatoire", "Le joueur choisit", "Figures"};
+        String[] modes = {"Aléatoire", "Le joueur choisit", "Figures", "Puzzle"};
         modeComboBox = new JComboBox<>(modes);
         modeComboBox.addActionListener(new ActionListener() {
             @Override
@@ -78,22 +78,44 @@ public class Demo extends JFrame {
                         generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         initializeRandomGrid();
+		        puzzleFigureComboBox.setEnabled(false);
                         figureComboBox.setEnabled(false);  
+			removePuzzlePanel();
+                        play.setEnabled(true);
                         break;
                     case "Le joueur choisit":
                         currentMode = GridMode.PLAYER_CHOOSES;
                         generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         initializeEmptyGrid();
+		        puzzleFigureComboBox.setEnabled(false);
                         figureComboBox.setEnabled(false);  
+			removePuzzlePanel();
+                        play.setEnabled(true);
                         break;
                     case "Figures":
                         currentMode = GridMode.FIGURES;
                         generationLabel.setText("Génération: 0");
                         generationCount = 0;
+		        puzzleFigureComboBox.setEnabled(false);
                         figureComboBox.setEnabled(true);  
                         initializeEmptyGrid();  
+			removePuzzlePanel();
+                        play.setEnabled(true);
                         break;
+                   //Puzzle mode
+		    case "Puzzle":
+		        currentMode = GridMode.PUZZLE;
+		        generationLabel.setText("Génération: 0");
+		        generationCount = 0;
+		        puzzleChallenge = new PuzzleChallenge(size, liveCellColor, deadCellColor, emojisEnabled, 20, 10);
+		        initializeEmptyGrid();
+		        addPuzzlePanel(puzzleChallenge.getTargetPanel());
+		        puzzleFigureComboBox.setEnabled(true);
+		        figureComboBox.setEnabled(false);
+		        play.setEnabled(false);
+		        break;
+                    //Puzzle mode
                 }
                 gridPanel.repaint();
                 updateAliveCellCount(); 
@@ -111,6 +133,21 @@ public class Demo extends JFrame {
             }
         });
         //Andrea
+
+    //Puzzle mode
+	String[] puzzleFigures = {"Glider", "Block", "Blinker"};
+	puzzleFigureComboBox = new JComboBox<>(puzzleFigures);
+	puzzleFigureComboBox.setEnabled(false);
+	puzzleFigureComboBox.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		if (currentMode == GridMode.PUZZLE && puzzleChallenge != null) {
+		    String selectedPuzzle = (String) puzzleFigureComboBox.getSelectedItem();
+		    puzzleChallenge.setTargetPattern(selectedPuzzle);
+		}
+	    }
+	});
+    //Puzzle mode
 
         this.start = new JButton("Commencer");
         this.start.addActionListener(new ActionListener() {
@@ -131,6 +168,21 @@ public class Demo extends JFrame {
                     updateAliveCellCount();
                     generationLabel.setText("Génération: " + generationCount); 
                     gridPanel.repaint();
+         // Puzzle mode
+		    if (currentMode == GridMode.PUZZLE) {
+		        if (puzzleChallenge.checkPuzzleSolution(grid)) {
+		            JOptionPane.showMessageDialog(Demo.this, "Puzzle trouve! Pour rejoue clique sur le puzzle button");
+		            active = false;
+		            simulationTimer.stop();
+		            removePuzzlePanel(); 
+		        } else if (generationCount >= puzzleChallenge.getGenerationLimit()) {
+		            JOptionPane.showMessageDialog(Demo.this, "Puzzle error, pour resayer clique encore fois sur puzzle button!");
+		            active = false;
+		            simulationTimer.stop();
+		            removePuzzlePanel();
+		        }
+		    }
+         // Puzzle mode
                 }
             }
         });
@@ -189,6 +241,23 @@ public class Demo extends JFrame {
                     placeFigureOnGrid(x, y, selectedFigure); 
                     updateAliveCellCount(); 
                 }
+            // Puzzle mode
+		if (currentMode == GridMode.PUZZLE) {
+			if (puzzleChallenge != null && puzzleChallenge.canToggleCell()) {
+		 		int cellWidth = gridPanel.getWidth() / grid.getSize();
+				int cellHeight = gridPanel.getHeight() / grid.getSize();
+			        int x = e.getX() / cellWidth;
+			        int y = e.getY() / cellHeight;
+			        Node node = grid.getNode(x, y);
+			        node.setAlive(!node.isAlive());
+			        puzzleChallenge.incrementMoveCount();
+			        gridPanel.repaint();
+			        updateAliveCellCount();
+		    } else {
+			        JOptionPane.showMessageDialog(Demo.this, "Vous avez atteint le nombre maximal de modifications ("+ (puzzleChallenge != null ? puzzleChallenge.getMoveLimit() : "") + ") pour ce puzzle.");
+			  }
+		}
+             // Puzzle mode
             }
         });
 
@@ -222,18 +291,19 @@ public class Demo extends JFrame {
 	
 	this.vitesse = new JLabel("Vitesse:");
 
-        aliveCellLabel.setBounds(750, 100, 150, 50);
-        generationLabel.setBounds(950, 100, 150, 50);
-        modeComboBox.setBounds(750, 200, 150, 50);
-        figureComboBox.setBounds(950, 200, 150, 50);
-        start.setBounds(750, 300, 150, 50);
-        next.setBounds(950, 300, 150, 50);
-        play.setBounds(750, 400, 150, 50);
-        stop.setBounds(950, 400, 150, 50);
-		vitesse.setBounds(750, 500, 150, 50);
-        speedSlider.setBounds(950, 500, 150, 50);
-        toMenu.setBounds(750, 600, 150, 50);
-        exit.setBounds(950, 600, 150, 50);
+        aliveCellLabel.setBounds(850, 50, 150, 50);
+        generationLabel.setBounds(1150, 50, 150, 50);
+        modeComboBox.setBounds(850, 125, 150, 50);
+        figureComboBox.setBounds(1150, 125, 150, 50);
+        start.setBounds(850, 200, 150, 50);
+        next.setBounds(1150, 200, 150, 50);
+        play.setBounds(850, 275, 150, 50);
+        stop.setBounds(1150, 275, 150, 50);
+        vitesse.setBounds(850, 350, 150, 50);
+        speedSlider.setBounds(1150, 350, 150, 50);
+        toMenu.setBounds(850, 425, 150, 50);
+        exit.setBounds(1150, 425, 150, 50);
+	puzzleFigureComboBox.setBounds(850, 550, 150, 50);    // Puzzle mode
 
 
         this.add(aliveCellLabel);
@@ -248,11 +318,30 @@ public class Demo extends JFrame {
         this.add(speedSlider);
         this.add(toMenu);
         this.add(exit);
+	this.add(puzzleFigureComboBox);    // Puzzle mode
 
         this.pack();
-        this.setSize(1200, 800);
+        this.setSize(1600, 800);
         this.setVisible(true);
     }
+
+
+    // Puzzle mode
+    private void addPuzzlePanel(JPanel panel) {
+        panel.setBounds(1150, 550, 150, 150);
+        this.add(panel);
+        this.repaint();
+    }
+
+    private void removePuzzlePanel() {
+        if (puzzleChallenge != null) {
+            JPanel panel = puzzleChallenge.getTargetPanel();
+            this.remove(panel);
+            puzzleChallenge = null;
+            this.repaint();
+        }
+    }
+    // Puzzle mode
 
     private void initializeRandomGrid() {
         Random rand = new Random();
