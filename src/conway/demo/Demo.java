@@ -20,7 +20,7 @@ public class Demo extends JFrame {
 
     private int size;
     private Grid grid;
-    private HashLifeAlgo hashLifeAlgo;
+    private BasicAlgo BasicAlgo;
     private GridPanel gridPanel;
     private JButton start, next, play, stop, toMenu, exit;
     //Andrea
@@ -51,7 +51,7 @@ public class Demo extends JFrame {
         initializeRandomGrid(); 
 
         Rule game = new Conway();
-        this.hashLifeAlgo = new HashLifeAlgo();
+        this.BasicAlgo = new BasicAlgo(grid, game);
         this.grid.setNeighbors();
 
         this.setTitle("Jeu de la vie");
@@ -126,7 +126,7 @@ public class Demo extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (active) {
-                    hashLifeAlgo.generate(grid);
+                    BasicAlgo.generate();
                     generationCount++;             
                     updateAliveCellCount();
                     generationLabel.setText("Génération: " + generationCount); 
@@ -136,7 +136,7 @@ public class Demo extends JFrame {
         });
         
         this.simulationTimer = new Timer(speed, e -> {
-            hashLifeAlgo.generate(grid);
+            BasicAlgo.generate();
             generationCount++; 
             updateAliveCellCount();  
             generationLabel.setText("Génération: " + generationCount); 
