@@ -43,5 +43,21 @@ public class Conway implements Rule {
             return liveNeighbors == 3;
         }
     }
+    
+    public boolean evaluateCell(boolean a, boolean b, boolean c,
+                            boolean d, boolean e, boolean f,
+                            boolean g, boolean h, boolean i) {
+    int count = 0;
+    if (a) count++;
+    if (b) count++;
+    if (c) count++;
+    if (d) count++;
+    if (f) count++;
+    if (g) count++;
+    if (h) count++;
+    if (i) count++;
+
+    return (e && count == 2) || count == 3;
+}
 }
 

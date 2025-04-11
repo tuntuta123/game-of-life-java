@@ -1,6 +1,7 @@
 package conway.graphics.menu;
 
-import conway.demo.Demo;
+import conway.demo.*;
+import conway.logic.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,6 +23,9 @@ public class SubMenu implements MenuInterface {
     public final ColorItem defaultLiveColor = new ColorItem(Color.RED, "Red");
     public final ColorItem defaultDeadColor = new ColorItem(Color.WHITE, "Pink");
     public final boolean defaultEmoji = false;
+
+    // Add JComboBox to select the algorithm
+    public JComboBox<String> algorithmComboBox;  
 
     public SubMenu(String title) {
         this.title = title;
@@ -76,17 +80,27 @@ public class SubMenu implements MenuInterface {
         this.deadColor = new JComboBox<>(deadColors.toArray(new ColorItem[0]));
         this.deadColor.setBounds(550, 190, 200, 40);  
         this.panel.add(this.deadColor);
-        
+
         this.emoji = new JCheckBox("Enable Emojis");
         this.emoji.setBounds(50, 270, 300, 40);
         this.panel.add(this.emoji);
+
+        // Add ComboBox for algorithm selection
+        JLabel algorithmLabel = new JLabel("Choisissez l'algorithme:");
+        algorithmLabel.setBounds(50, 320, 500, 40);
+        this.panel.add(algorithmLabel);
+
+        String[] algorithms = {"BasicAlgo", "HashlifeAlgo"};
+        this.algorithmComboBox = new JComboBox<>(algorithms);
+        this.algorithmComboBox.setBounds(550, 320, 200, 40);
+        this.panel.add(this.algorithmComboBox);
 
         JPanel buttons = new JPanel();
         buttons.setBounds(5, 350, 900, 100);  
         buttons.setLayout(new FlowLayout(FlowLayout.LEFT, 40, 20)); 
         this.panel.add(buttons);
 
-	Dimension dim = new Dimension(250, 40);
+        Dimension dim = new Dimension(250, 40);
 
         this.back = new JButton("Retour au menu principal");
         this.back.setPreferredSize(dim);  
@@ -114,6 +128,7 @@ public class SubMenu implements MenuInterface {
                 liveColor.setSelectedItem(defaultLiveColor);
                 deadColor.setSelectedItem(defaultDeadColor);
                 emoji.setSelected(defaultEmoji);
+                algorithmComboBox.setSelectedIndex(0); 
             }
         });
 
@@ -124,10 +139,23 @@ public class SubMenu implements MenuInterface {
                 ColorItem selectedDeadColorItem = (ColorItem) deadColor.getSelectedItem();
                 boolean emojisEnabled = emoji.isSelected();
 
-                Demo demo = new Demo(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
-                demo.startSimulation();
-                demo.updateAliveCellCount();
-                frame.dispose();
+                String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
+                Demo demo = null;
+                DemoHashlife demoh = null;
+
+                if (selectedAlgorithm.equals("BasicAlgo")) {
+                    demo = new Demo(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
+                } else if (selectedAlgorithm.equals("HashlifeAlgo")) {
+                    demoh = new DemoHashlife();
+                }
+
+                if (demo != null) {
+                    demo.startSimulation();
+                    demo.updateAliveCellCount();
+                }
+
+                
+                frame.dispose(); 
             }
         });
     }
