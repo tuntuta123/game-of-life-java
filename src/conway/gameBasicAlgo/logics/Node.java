@@ -18,7 +18,7 @@ public class Node {
     private Node west; 
 
     /**
-     * Constructeur pour initialiser un noeud avec son état .
+     * Constructeur pour initialiser un noeud avec son état.
      *
      * @param alive est l'état initial du noeud.
      */
@@ -44,150 +44,83 @@ public class Node {
         this.alive = alive;
     }
 
-    /**
-     * Cette méthode récupère le voisin qui est au nord-est du noeud.
-     *
-     * @return Le voisin nord-est du noeud.
-     */
-    public Node getNorthEast() {
-        return northEast;
+    public Node getNorthEast() { return northEast; }
+    public void setNorthEast(Node northEast) { this.northEast = northEast; }
+
+    public Node getNorthWest() { return northWest; }
+    public void setNorthWest(Node northWest) { this.northWest = northWest; }
+
+    public Node getNorth() { return north; }
+    public void setNorth(Node north) { this.north = north; }
+
+    public Node getSouthEast() { return southEast; }
+    public void setSouthEast(Node southEast) { this.southEast = southEast; }
+
+    public Node getSouthWest() { return southWest; }
+    public void setSouthWest(Node southWest) { this.southWest = southWest; }
+
+    public Node getSouth() { return south; }
+    public void setSouth(Node south) { this.south = south; }
+
+    public Node getEast() { return east; }
+    public void setEast(Node east) { this.east = east; }
+
+    public Node getWest() { return west; }
+    public void setWest(Node west) { this.west = west; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
+        Node node = (Node) o;
+        return alive == node.alive &&
+                equalsNeighbors(node);
     }
 
-    /**
-     * Cette méthode modifie le voisin nord-est du noeud.
-     *
-     * @param northEast est le voisin nord-est à définir.
-     */
-    public void setNorthEast(Node northEast) {
-        this.northEast = northEast;
+    private boolean equalsNeighbors(Node node) {
+        return (northEast == node.northEast) &&
+                (northWest == node.northWest) &&
+                (north == node.north) &&
+                (southEast == node.southEast) &&
+                (southWest == node.southWest) &&
+                (south == node.south) &&
+                (east == node.east) &&
+                (west == node.west);
     }
 
-    /**
-     * Cette méthode récupère le voisin nord-ouest du noeud.
-     *
-     * @return Le voisin nord-ouest du noeud.
-     */
-    public Node getNorthWest() {
-        return northWest;
+    @Override
+    public int hashCode() {
+        int result = Boolean.hashCode(alive);
+        result = 31 * result + hashNeighbors();
+        return result;
     }
 
-    /**
-     * Cette méthode définit le voisin nord-ouest du noeud.
-     *
-     * @param northWest est le voisin nord-ouest du noeud.
-     */
-    public void setNorthWest(Node northWest) {
-        this.northWest = northWest;
+    private int hashNeighbors() {
+        int result = 1;
+        result = 31 * result + (northEast != null ? northEast.hashCode() : 0);
+        result = 31 * result + (northWest != null ? northWest.hashCode() : 0);
+        result = 31 * result + (north != null ? north.hashCode() : 0);
+        result = 31 * result + (southEast != null ? southEast.hashCode() : 0);
+        result = 31 * result + (southWest != null ? southWest.hashCode() : 0);
+        result = 31 * result + (south != null ? south.hashCode() : 0);
+        result = 31 * result + (east != null ? east.hashCode() : 0);
+        result = 31 * result + (west != null ? west.hashCode() : 0);
+        return result;
     }
 
-    /**
-     * Cette méthode récupère le voisin nord du noeud.
-     *
-     * @return Le voisin nord du noeud.
-     */
-    public Node getNorth() {
-        return north;
+    @Override
+    public String toString() {
+        return "Node{" +
+                "alive=" + alive +
+                ", northEast=" + northEast +
+                ", northWest=" + northWest +
+                ", north=" + north +
+                ", southEast=" + southEast +
+                ", southWest=" + southWest +
+                ", south=" + south +
+                ", east=" + east +
+                ", west=" + west +
+                '}';
     }
-
-    /**
-     * Cette méthode définit le voisin nord du noeud.
-     *
-     * @param north est le voisin nord do noeud qui doit etre définit.
-     */
-    public void setNorth(Node north) {
-        this.north = north;
-    }
-
-    /**
-     * Cette méthode récupère le voisin sud-est du noeud.
-     *
-     * @return Le voisin sud-est du noeud.
-     */
-    public Node getSouthEast() {
-        return southEast;
-    }
-
-    /**
-     * Cette méthode définit le voisin sud-est du noeud.
-     *
-     * @param southEast est le voisin sud-est à définir.
-     */
-    public void setSouthEast(Node southEast) {
-        this.southEast = southEast;
-    }
-
-    /**
-     * Cette méthode récupère le voisin sud-ouest du noeud.
-     *
-     * @return Le voisin qui est au sud-ouest du noeud.
-     */
-    public Node getSouthWest() {
-        return southWest;
-    }
-
-    /**
-     * Cette méthode définit le voisin sud-ouest du noeud.
-     *
-     * @param southWest est le voisin sud-ouest à définir.
-     */
-    public void setSouthWest(Node southWest) {
-        this.southWest = southWest;
-    }
-
-    /**
-     * Cette méthode récupère le voisin sud du noeud.
-     *
-     * @return Le voisin qui est au sud du noeud.
-     */
-    public Node getSouth() {
-        return south;
-    }
-
-    /**
-     * Cette méthode définit le voisin sud du noeud.
-     *
-     * @param south est le voisin sud à définir.
-     */
-    public void setSouth(Node south) {
-        this.south = south;
-    }
-
-    /**
-     * Cette méthode récupère le voisin est du noeud.
-     *
-     * @return Le voisin est du noeud.
-     */
-    public Node getEast() {
-        return east;
-    }
-
-    /**
-     * Cette méthode définit le voisin est du noeud.
-     *
-     * @param east est le voisin est à définir.
-     */
-    public void setEast(Node east) {
-        this.east = east;
-    }
-
-    /**
-     * Cette méthode récupère le voisin ouest du noeud.
-     *
-     * @return Le voisin ouest du noeud.
-     */
-    public Node getWest() {
-        return west;
-    }
-
-    /**
-     * Cette méthode définit le voisin ouest du noeud.
-     *
-     * @param west est le voisin ouest à définir.
-     */
-    public void setWest(Node west) {
-        this.west = west;
-    }
-    
-    
 }
 

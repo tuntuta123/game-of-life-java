@@ -1,12 +1,14 @@
 package conway.gameBasicAlgo.logics;
 
+import java.util.*;
+
 /**
  * La classe Grid représente une grille de noeuds pour le jeu de la vie.
  * Chaque cellule peut être vivante ou morte, et cette classe contient des méthodes pour manipuler les cellules.
  */
-public class Grid {
+public class Grid implements Iterable<Node> {
 
-    private Node[][] grid;
+    private Map<String, Node> nodeMap;  
     private int size;
 
     /**
@@ -16,12 +18,13 @@ public class Grid {
      */
     public Grid(int size) {
         this.size = size;
-        this.grid = new Node[size][size];
-        
+        this.nodeMap = new HashMap<>();
+
         // Initialisation d'une grille seulement avec des cellules mortes.
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                this.grid[x][y] = new Node(false);  // Initialize with dead cells
+                Node node = new Node(false);
+                this.nodeMap.put(x + "," + y, node);  
             }
         }
     }
@@ -34,7 +37,7 @@ public class Grid {
      * @return Le noeud qui se trouve à la position (x, y).
      */
     public Node getNode(int x, int y) {
-        return this.grid[x][y];
+        return this.nodeMap.get(x + "," + y);
     }
 
     /**
@@ -45,7 +48,10 @@ public class Grid {
      * @param alive est un boolean qui représente l'état à attribuer au noeud (true ---> vivant, false ---> mort).
      */
     public void setNode(int x, int y, boolean alive) {
-        this.grid[x][y].setAlive(alive);
+        Node node = this.getNode(x, y);
+        if (node != null) {
+            node.setAlive(alive);
+        }
     }
 
     /**
@@ -63,7 +69,7 @@ public class Grid {
     public void setNeighbors() {
         for (int x = 0; x < this.size; x++) {
             for (int y = 0; y < this.size; y++) {
-                Node node = this.grid[x][y];
+                Node node = this.getNode(x, y);
                 Node[] neighbors = getNeighbors(x, y);
 
                 node.setNorthWest(neighbors[0]);
@@ -100,7 +106,7 @@ public class Grid {
 
                 // Vérifie si les coordonnées du voisin sont dans les limites de la grille. Si le voisin est hors limites, le met à null.
                 if (nx >= 0 && nx < this.size && ny >= 0 && ny < this.size)
-                    neighbors[index++] = this.grid[nx][ny];
+                    neighbors[index++] = this.getNode(nx, ny);
                 else
                     neighbors[index++] = null;
             }
@@ -108,13 +114,71 @@ public class Grid {
         return neighbors;
     }
 
+    /**
+     * Clear the grid (set all nodes to dead).
+     */
     public void clearGrid() {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                grid[x][y].setAlive(false);  
+                this.getNode(x, y).setAlive(false);  
             }
         }
     }
 
+    /**
+     * Returns an iterator to traverse the grid nodes.
+     */
+    @Override
+    public Iterator<Node> iterator() {
+        return new Iterator<Node>() {
+            private Iterator<Map.Entry<String, Node>> it = nodeMap.entrySet().iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Node next() {
+                return it.next().getValue();
+            }
+        };
+    }
+
+    /**
+     * Comparator for sorting nodes based on their state (alive or dead).
+     */
+    public static class NodeComparator implements Comparator<Node> {
+        @Override
+        public int compare(Node o1, Node o2) {
+            return Boolean.compare(o1.isAlive(), o2.isAlive());
+        }
+    }
+
+    /**
+     * Checks if two Grid objects are equal (based on nodeMap).
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Grid grid = (Grid) obj;
+        return Objects.equals(nodeMap, grid.nodeMap);
+    }
+
+    /**
+     * Generates a hashCode for the Grid object based on nodeMap.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeMap);
+    }
+
+    /**
+     * Compares this Grid to another Grid based on size and node states.
+     */
+    public int compareTo(Grid other) {
+        return Integer.compare(this.size, other.size);
+    }
 }
 

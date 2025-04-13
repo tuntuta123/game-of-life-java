@@ -84,18 +84,17 @@ public class SubMenu implements MenuInterface {
         this.emoji.setBounds(50, 270, 300, 40);
         this.panel.add(this.emoji);
 
-        // Add ComboBox for algorithm selection
         JLabel algorithmLabel = new JLabel("Choisissez l'algorithme:");
-        algorithmLabel.setBounds(50, 320, 500, 40);
+        algorithmLabel.setBounds(50, 330, 500, 40);
         this.panel.add(algorithmLabel);
 
         String[] algorithms = {"BasicAlgo", "HashlifeAlgo"};
         this.algorithmComboBox = new JComboBox<>(algorithms);
-        this.algorithmComboBox.setBounds(550, 320, 200, 40);
+        this.algorithmComboBox.setBounds(550, 330, 200, 40);
         this.panel.add(this.algorithmComboBox);
 
         JPanel buttons = new JPanel();
-        buttons.setBounds(5, 350, 900, 100);  
+        buttons.setBounds(5, 380, 900, 100);  
         buttons.setLayout(new FlowLayout(FlowLayout.LEFT, 40, 20)); 
         this.panel.add(buttons);
 
@@ -137,23 +136,18 @@ public class SubMenu implements MenuInterface {
                 ColorItem selectedLiveColorItem = (ColorItem) liveColor.getSelectedItem();
                 ColorItem selectedDeadColorItem = (ColorItem) deadColor.getSelectedItem();
                 boolean emojisEnabled = emoji.isSelected();
-
                 String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
                 Demo demo = null;
                 DemoHashlife demoh = null;
-
                 if (selectedAlgorithm.equals("BasicAlgo")) {
                     demo = new Demo(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
                 } else if (selectedAlgorithm.equals("HashlifeAlgo")) {
                     demoh = new DemoHashlife(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
                 }
-
                 if (demo != null) {
                     demo.startSimulation();
                     demo.updateAliveCellCount();
                 }
-
-                
                 frame.dispose(); 
             }
         });

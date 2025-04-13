@@ -1,10 +1,14 @@
 package conway.gameHashlifeAlgo.logics;
 
-public class NodeHashlife {
+import java.util.Arrays;
+import java.util.Objects;
 
-	public boolean[][] state; 
-    public int size;  
+public class NodeHashlife implements Comparable<NodeHashlife> {
+
+    public boolean[][] state;
+    public int size;
     public NodeHashlife ne, nw, sw, se;
+
     public NodeHashlife(int size, boolean[][] state) {
         this.size = size;
         this.state = state;
@@ -17,9 +21,9 @@ public class NodeHashlife {
         this.nw = nw;
         this.sw = sw;
         this.se = se;
-        this.state = null;  
+        this.state = null;
     }
-    
+
     public boolean[][] getState() {
         return this.state;
     }
@@ -27,12 +31,33 @@ public class NodeHashlife {
     public void setState(boolean[][] state) {
         this.state = state;
     }
-    
+
     public boolean isLeaf() {
         return ne == null && nw == null && sw == null && se == null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NodeHashlife that = (NodeHashlife) o;
+        return size == that.size && Arrays.deepEquals(state, that.state);
+    }
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(size);
+        result = 31 * result + Arrays.deepHashCode(state); 
+        return result;
+    }
+
+    @Override
+    public int compareTo(NodeHashlife other) {
+        return Integer.compare(this.size, other.size);
+    }
+
     public static NodeHashlife split(NodeHashlife root) {
+        if (root.size == 1) return root;  
+
         int halfSize = root.size / 2;
         boolean[][] topLeft = new boolean[halfSize][halfSize];
         boolean[][] topRight = new boolean[halfSize][halfSize];
@@ -118,3 +143,4 @@ public class NodeHashlife {
         return new NodeHashlife(size, ne, nw, sw, se);
     }
 }
+

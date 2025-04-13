@@ -55,7 +55,7 @@ public class Demo extends JFrame {
         this.BasicAlgo = new BasicAlgo(grid, game);
         this.grid.setNeighbors();
 
-        this.setTitle("Jeu de la vie");
+        this.setTitle("Jeu de la vie (algorithme de base)");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
 

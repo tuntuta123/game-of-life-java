@@ -1,8 +1,7 @@
 package conway.gameBasicAlgo.algo;
 
 import conway.gameBasicAlgo.logics.*;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * La classe BasicAlgo implémente l'algorithme BasicAlgo pour simuler le jeu de la vie
@@ -12,7 +11,7 @@ import java.util.HashMap;
 public class BasicAlgo {
     private Grid grid;
     private Rule rule;
-    private HashMap<Integer, Boolean> cache;
+    private Map<Integer, Boolean> cache;
 
     /**
      * Constructeur pour initialiser l'algorithme BasicAlgo avec une grille et une règle spécifiée.
@@ -98,5 +97,18 @@ public class BasicAlgo {
     	if (neighbor != null && neighbor.isAlive()) 
     		return 1;
     	return 0;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        BasicAlgo that = (BasicAlgo) obj;
+        return grid.equals(that.grid) && rule.equals(that.rule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(grid, rule);
     }
 }

@@ -5,6 +5,7 @@ import conway.gameBasicAlgo.shapes.*;
 import conway.gameBasicAlgo.graphics.GridPanel;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.util.*;
 
 public class PuzzleChallenge {
     private Grid targetGrid;       
@@ -16,6 +17,14 @@ public class PuzzleChallenge {
     private Color liveCellColor;
     private Color deadCellColor;
     private boolean emojisEnabled;
+
+    private static final Map<String, Shapes> shapeMap = new HashMap<>();
+
+    static {
+        shapeMap.put("Block", new Block());
+        shapeMap.put("Blinker", new Blinker());
+        shapeMap.put("Glider", new Glider());
+    }
 
     public PuzzleChallenge(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled, int moveLimit, int generationLimit) {
         this.size = size;
@@ -40,19 +49,7 @@ public class PuzzleChallenge {
     public void setTargetPattern(String figureName) {
         clearTargetGrid();
         int mid = size / 2 - 1;
-        Shapes targetShape;
-        switch(figureName) {
-            case "Block":
-                targetShape = new Block();
-                break;
-            case "Blinker":
-                targetShape = new Blinker();  
-                break;
-            case "Glider":
-            default:
-                targetShape = new Glider();
-                break;
-        }
+        Shapes targetShape = shapeMap.getOrDefault(figureName, new Glider()); 
         targetShape.applyShape(targetGrid, mid, mid);
         if(targetPanel != null) {
             targetPanel.repaint();
@@ -89,4 +86,22 @@ public class PuzzleChallenge {
          }
          return true;
     }
+
+    public int compareTo(PuzzleChallenge other) {
+        return Integer.compare(this.size, other.size);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        PuzzleChallenge that = (PuzzleChallenge) obj;
+        return targetGrid.equals(that.targetGrid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(targetGrid);
+    }
 }
+
