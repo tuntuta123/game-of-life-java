@@ -1,24 +1,30 @@
 package conway.gameHashlifeAlgo.logics;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
-public class NodeHashlife implements Comparable<NodeHashlife> {
+public class NodeHashlife {
 
     public boolean[][] state;
     public int size;
+    public int level;
     public NodeHashlife ne, nw, sw, se;
+    public NodeHashlife result;
+
+    private static final Map<String, NodeHashlife> memo = new HashMap<>();
 
     public NodeHashlife(int size, boolean[][] state) {
         this.size = size;
+        this.level = (int) (Math.log(size) / Math.log(2));
         this.state = state;
         this.ne = this.nw = this.sw = this.se = null;
     }
 
-    public NodeHashlife(int size, NodeHashlife ne, NodeHashlife nw, NodeHashlife sw, NodeHashlife se) {
-        this.size = size;
-        this.ne = ne;
+    public NodeHashlife(int level, NodeHashlife nw, NodeHashlife ne, NodeHashlife sw, NodeHashlife se) {
+        this.level = level;
+        this.size = nw.size * 2;
         this.nw = nw;
+        this.ne = ne;
         this.sw = sw;
         this.se = se;
         this.state = null;
@@ -36,111 +42,103 @@ public class NodeHashlife implements Comparable<NodeHashlife> {
         return ne == null && nw == null && sw == null && se == null;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NodeHashlife that = (NodeHashlife) o;
-        return size == that.size && Arrays.deepEquals(state, that.state);
-    }
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(size);
-        result = 31 * result + Arrays.deepHashCode(state); 
+    public NodeHashlife next() {
+        if (this.result != null) return this.result;
+
+        if (this.level == 0) {
+            this.result = this;
+            return result;
+        }
+
+        if (this.level == 1) {
+            this.result = simulateBaseCase();
+            return result;
+        }
+
+        NodeHashlife n00 = nw.center();
+        NodeHashlife n01 = centerHorizontal(nw, ne);
+        NodeHashlife n02 = ne.center();
+
+        NodeHashlife n10 = centerVertical(nw, sw);
+        NodeHashlife n11 = center();
+        NodeHashlife n12 = centerVertical(ne, se);
+
+        NodeHashlife n20 = sw.center();
+        NodeHashlife n21 = centerHorizontal(sw, se);
+        NodeHashlife n22 = se.center();
+
+        NodeHashlife nwNext = createNode(n00, n01, n10, n11).next();
+        NodeHashlife neNext = createNode(n01, n02, n11, n12).next();
+        NodeHashlife swNext = createNode(n10, n11, n20, n21).next();
+        NodeHashlife seNext = createNode(n11, n12, n21, n22).next();
+
+        this.result = createNode(nwNext, neNext, swNext, seNext);
         return result;
     }
 
-    @Override
-    public int compareTo(NodeHashlife other) {
-        return Integer.compare(this.size, other.size);
-    }
-
-    public static NodeHashlife split(NodeHashlife root) {
-        if (root.size == 1) return root;  
-
-        int halfSize = root.size / 2;
-        boolean[][] topLeft = new boolean[halfSize][halfSize];
-        boolean[][] topRight = new boolean[halfSize][halfSize];
-        boolean[][] bottomLeft = new boolean[halfSize][halfSize];
-        boolean[][] bottomRight = new boolean[halfSize][halfSize];
-
-        for (int i = 0; i < halfSize; i++) {
-            for (int j = 0; j < halfSize; j++) {
-                topLeft[i][j] = root.state[i][j];
-                topRight[i][j] = root.state[i][halfSize + j];
-                bottomLeft[i][j] = root.state[halfSize + i][j];
-                bottomRight[i][j] = root.state[halfSize + i][halfSize + j];
-            }
-        }
-
-        NodeHashlife ne = new NodeHashlife(halfSize, topRight);
-        NodeHashlife nw = new NodeHashlife(halfSize, topLeft);
-        NodeHashlife sw = new NodeHashlife(halfSize, bottomLeft);
-        NodeHashlife se = new NodeHashlife(halfSize, bottomRight);
-
-        return new NodeHashlife(root.size, ne, nw, sw, se);
-    }
-
-    public static NodeHashlife applyConwayRule(NodeHashlife leaf) {
-        int size = leaf.size;
-        boolean[][] nextState = new boolean[size][size];
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                int liveNeighbors = countLiveNeighbors(leaf, i, j);
-                if (leaf.state[i][j]) {
-                    nextState[i][j] = liveNeighbors == 2 || liveNeighbors == 3;
-                } else {
-                    nextState[i][j] = liveNeighbors == 3;
+    private NodeHashlife simulateBaseCase() {
+        boolean[][] next = new boolean[2][2];
+        for (int y = 0; y < 2; y++) {
+            for (int x = 0; x < 2; x++) {
+                int gx = x + 1;
+                int gy = y + 1;
+                int count = 0;
+                for (int dy = -1; dy <= 1; dy++) {
+                    for (int dx = -1; dx <= 1; dx++) {
+                        if (dx == 0 && dy == 0) continue;
+                        if (gy + dy >= 0 && gy + dy < 4 && gx + dx >= 0 && gx + dx < 4) {
+                            if (state[gy + dy][gx + dx]) count++;
+                        }
+                    }
                 }
+                next[y][x] = state[gy][gx] ? (count == 2 || count == 3) : (count == 3);
             }
         }
-
-        return new NodeHashlife(size, nextState);
+        return new NodeHashlife(2, next);
     }
 
-    private static int countLiveNeighbors(NodeHashlife leaf, int x, int y) {
-        int[][] neighbors = {
-            {-1, -1}, {-1, 0}, {-1, 1},
-            { 0, -1},           { 0, 1},
-            { 1, -1}, { 1, 0}, { 1, 1}
-        };
-        int count = 0;
-        for (int[] neighbor : neighbors) {
-            int nx = x + neighbor[0];
-            int ny = y + neighbor[1];
-            if (nx >= 0 && nx < leaf.size && ny >= 0 && ny < leaf.size && leaf.state[nx][ny]) {
-                count++;
-            }
-        }
-        return count;
+    public static NodeHashlife createNode(NodeHashlife nw, NodeHashlife ne, NodeHashlife sw, NodeHashlife se) {
+        String key = nw.hashCode() + "," + ne.hashCode() + "," + sw.hashCode() + "," + se.hashCode();
+        if (memo.containsKey(key)) return memo.get(key);
+        NodeHashlife node = new NodeHashlife(nw.level + 1, nw, ne, sw, se);
+        memo.put(key, node);
+        return node;
     }
 
-    public static NodeHashlife combine(NodeHashlife ne, NodeHashlife nw, NodeHashlife sw, NodeHashlife se) {
-        int size = ne.size * 2;
-        boolean[][] combinedState = new boolean[size][size];
+    public NodeHashlife center() {
+        return createNode(nw.se, ne.sw, sw.ne, se.nw);
+    }
 
-        if (ne.isLeaf() && nw.isLeaf() && sw.isLeaf() && se.isLeaf()) {
-            for (int i = 0; i < ne.size; i++) {
-                for (int j = 0; j < ne.size; j++) {
-                    combinedState[i][j] = nw.state[i][j];
-                    combinedState[i][ne.size + j] = ne.state[i][j];
-                    combinedState[ne.size + i][j] = sw.state[i][j];
-                    combinedState[ne.size + i][ne.size + j] = se.state[i][j];
-                }
-            }
-        } else {
-            for (int i = 0; i < ne.size; i++) {
-                for (int j = 0; j < ne.size; j++) {
-                    combinedState[i][j] = nw.state[i][j];
-                    combinedState[i][ne.size + j] = ne.state[i][j];
-                    combinedState[ne.size + i][j] = sw.state[i][j];
-                    combinedState[ne.size + i][ne.size + j] = se.state[i][j];
-                }
+    public static NodeHashlife centerHorizontal(NodeHashlife left, NodeHashlife right) {
+        return createNode(left.ne.se, right.nw.sw, left.se.ne, right.sw.nw);
+    }
+
+    public static NodeHashlife centerVertical(NodeHashlife top, NodeHashlife bottom) {
+        return createNode(top.sw.se, top.se.sw, bottom.nw.ne, bottom.ne.nw);
+    }
+    public static NodeHashlife splitToRecursive(NodeHashlife node) {
+        if (node.level <= 1) return node;
+
+        int half = node.size / 2;
+        boolean[][] topLeft = new boolean[half][half];
+        boolean[][] topRight = new boolean[half][half];
+        boolean[][] bottomLeft = new boolean[half][half];
+        boolean[][] bottomRight = new boolean[half][half];
+
+        for (int i = 0; i < half; i++) {
+            for (int j = 0; j < half; j++) {
+                topLeft[i][j] = node.state[i][j];
+                topRight[i][j] = node.state[i][j + half];
+                bottomLeft[i][j] = node.state[i + half][j];
+                bottomRight[i][j] = node.state[i + half][j + half];
             }
         }
 
-        return new NodeHashlife(size, ne, nw, sw, se);
+        NodeHashlife nw = splitToRecursive(new NodeHashlife(half, topLeft));
+        NodeHashlife ne = splitToRecursive(new NodeHashlife(half, topRight));
+        NodeHashlife sw = splitToRecursive(new NodeHashlife(half, bottomLeft));
+        NodeHashlife se = splitToRecursive(new NodeHashlife(half, bottomRight));
+
+        return NodeHashlife.createNode(nw, ne, sw, se);
     }
 }
-

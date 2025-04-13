@@ -1,7 +1,6 @@
 package conway.gameHashlifeAlgo.shapes;
 
 import conway.gameHashlifeAlgo.logics.*;
-import conway.gameHashlifeAlgo.iterator.ShapeIterator;
 
 public class ShapesHashlife {
 
@@ -12,21 +11,19 @@ public class ShapesHashlife {
     }
 
     public void applyShape(GridHashlife gridHashlife, int x, int y) {
-        NodeHashlife root = gridHashlife.getRoot();
-        
-        ShapeIterator iterator = new ShapeIterator(figure);
-        while (iterator.hasNext()) {
-            int[] cell = iterator.next();
-            int i = cell[0];
-            int j = cell[1];
+		NodeHashlife root = gridHashlife.getRoot();
+		for (int i = 0; i < figure.length; i++) {
+		    for (int j = 0; j < figure[i].length; j++) {
+		        if (figure[i][j] == 1) {
+		            int row = y + i;
+		            int col = x + j;
+		            if (row >= 0 && row < root.state.length && col >= 0 && col < root.state[0].length) {
+		                root.state[row][col] = true;
+		            }
+		        }
+		    }
+		}
+	}
 
-            int row = y + i;
-            int col = x + j;
-
-            if (row >= 0 && row < root.state.length && col >= 0 && col < root.state[0].length) {
-                root.state[row][col] = true;
-            }
-        }
-    }
 }
 

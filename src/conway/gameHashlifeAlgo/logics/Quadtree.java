@@ -1,7 +1,6 @@
 package conway.gameHashlifeAlgo.logics;
 
 import conway.gameHashlifeAlgo.algo.*;
-import java.util.Objects;
 
 public class Quadtree {
     private NodeHashlife root;
@@ -31,19 +30,6 @@ public class Quadtree {
 
     public void setRoot(NodeHashlife root) {
         this.root = root;
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Quadtree quadtree = (Quadtree) o;
-        return size == quadtree.size && Objects.equals(root, quadtree.root);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(size, root);
     }
 }
 

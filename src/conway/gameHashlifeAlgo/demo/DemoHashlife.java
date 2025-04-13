@@ -8,8 +8,8 @@ import conway.gameHashlifeAlgo.shapes.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class DemoHashlife {
     public int size;
@@ -31,19 +31,12 @@ public class DemoHashlife {
     private JComboBox<String> modeSelector;
     private JComboBox<String> figureComboBox;
 
-    private Set<String> placedFigures; 
-    private Map<String, Integer> figurePlacementCount; 
-    private Queue<String> recentActions; 
-
     public DemoHashlife(int size, Color liveCellColor, Color deadCellColor, boolean emojisEnabled) {
         this.size = size;
         this.liveCellColor = liveCellColor;
         this.deadCellColor = deadCellColor;
         this.emojisEnabled = emojisEnabled;
         this.grid = initializeGrid(size);
-        this.placedFigures = new HashSet<>();
-        this.figurePlacementCount = new HashMap<>();
-        this.recentActions = new LinkedList<>();
         setupUI();
     }
 
@@ -51,7 +44,7 @@ public class DemoHashlife {
         boolean[][] initialState = new boolean[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                initialState[i][j] = Math.random() < 0.4;
+                initialState[i][j] = Math.random() < 0.5;
             }
         }
         return new GridHashlife(size, initialState);
@@ -62,7 +55,7 @@ public class DemoHashlife {
     }
 
     public void setupUI() {
-        frame = new JFrame("Jeu de la vie (algorithme Hashlife)");
+        frame = new JFrame("Game of Life (HashLife Algorithm)");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1600, 800);
         frame.setLayout(null);
@@ -258,15 +251,6 @@ public class DemoHashlife {
                 case "Blinker": new BlinkerHashlife().applyShape(grid, x, y); break;
                 default: throw new IllegalArgumentException("Unknown figure type: " + figure);
             }
-
-            placedFigures.add(figure);
-            figurePlacementCount.put(figure, figurePlacementCount.getOrDefault(figure, 0) + 1);
-
-            recentActions.offer("Applied " + figure + " at (" + x + "," + y + ")");
-            if (recentActions.size() > 10) {
-                recentActions.poll(); 
-            }
-
             panel.repaint();
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             JOptionPane.showMessageDialog(frame, "Erreur: " + e.getMessage(), "Erreur de placement ", JOptionPane.ERROR_MESSAGE);
@@ -301,4 +285,3 @@ public class DemoHashlife {
         }
     }
 }
-

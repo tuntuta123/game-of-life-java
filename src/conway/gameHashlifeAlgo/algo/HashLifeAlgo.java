@@ -6,43 +6,34 @@ import conway.gameHashlifeAlgo.logics.*;
 
 public class HashLifeAlgo {
 
-    private static Map<String, NodeHashlife> cache = new HashMap<>();
-
     public static NodeHashlife generateNextState(Quadtree quadtree) {
         NodeHashlife root = quadtree.getRoot();
-        
-        if (isCached(root)) {
-            return cache.get(getCacheKey(root));  
-        }
-        
+
         if (root.isLeaf()) {
-            NodeHashlife nextState = NodeHashlife.applyConwayRule(root);
-            cache.put(getCacheKey(root), nextState);  
-            return nextState;
+            root = NodeHashlife.splitToRecursive(root);
         }
 
-        NodeHashlife ne = generateNextState(new Quadtree(root.ne.size, root.ne.state));
-        NodeHashlife nw = generateNextState(new Quadtree(root.nw.size, root.nw.state));
-        NodeHashlife sw = generateNextState(new Quadtree(root.sw.size, root.sw.state));
-        NodeHashlife se = generateNextState(new Quadtree(root.se.size, root.se.state));
+        NodeHashlife expanded = expandUniverse(root);
+        NodeHashlife next = expanded.next();
 
-        NodeHashlife nextRoot = NodeHashlife.combine(ne, nw, sw, se);
-        cache.put(getCacheKey(nextRoot), nextRoot);  
-        return nextRoot;
+        return next;
     }
 
-    public static String getCacheKey(NodeHashlife NodeHashlife) {
-        StringBuilder key = new StringBuilder();
-        for (int i = 0; i < NodeHashlife.size; i++) {
-            for (int j = 0; j < NodeHashlife.size; j++) {
-                key.append(NodeHashlife.state[i][j] ? "1" : "0");
-            }
+    private static NodeHashlife expandUniverse(NodeHashlife node) {
+        int level = node.level;
+        NodeHashlife empty = createEmptyNode(level - 1);
+        NodeHashlife topLeft = NodeHashlife.createNode(empty, empty, empty, node.nw);
+        NodeHashlife topRight = NodeHashlife.createNode(empty, empty, node.ne, empty);
+        NodeHashlife bottomLeft = NodeHashlife.createNode(empty, node.sw, empty, empty);
+        NodeHashlife bottomRight = NodeHashlife.createNode(node.se, empty, empty, empty);
+        return NodeHashlife.createNode(topLeft, topRight, bottomLeft, bottomRight);
+    }
+
+    private static NodeHashlife createEmptyNode(int level) {
+        if (level == 0) {
+            return new NodeHashlife(1, new boolean[2][2]);
         }
-        return key.toString();
-    }
-
-    public static boolean isCached(NodeHashlife NodeHashlife) {
-        return cache.containsKey(getCacheKey(NodeHashlife));
+        NodeHashlife empty = createEmptyNode(level - 1);
+        return NodeHashlife.createNode(empty, empty, empty, empty);
     }
 }
-
