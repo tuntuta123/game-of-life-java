@@ -1,7 +1,5 @@
 package conway.logic;
 
-import conway.algo.*;
-
 /**
  * La classe Grid représente une grille de noeuds pour le jeu de la vie.
  * Chaque cellule peut être vivante ou morte, et cette classe contient des méthodes pour manipuler les cellules.
@@ -10,7 +8,6 @@ public class Grid {
 
     private Node[][] grid;
     private int size;
-    private Node root;  
 
     /**
      * Constructeur pour initialiser une grille avec une largeur et une hauteur.
@@ -119,36 +116,5 @@ public class Grid {
         }
     }
 
-    public Grid(int size, boolean[][] initialState) {
-        this.size = size;
-        this.root = new Node(size, initialState);  
-    }
-
-    public void generate() {
-        Quadtree quadtree = gridToQuadtree();
-        quadtree.setRoot(HashLifeAlgo.generateNextState(quadtree));  
-        this.root = quadtree.getRoot(); 
-    }
-
-    public void printState() {
-        for (boolean[] row : this.root.state) {
-            for (boolean cell : row) {
-                System.out.print(cell ? "1" : "0");
-            }
-            System.out.println();
-        }
-    }
-
-    public Node getRoot() {
-        return this.root;
-    }
-
-    public void setRoot(Node root) {
-        this.root = root;
-    }
-
-    private Quadtree gridToQuadtree() {
-        return new Quadtree(this.size, this.root.state);  
-    }
 }
 

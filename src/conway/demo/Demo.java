@@ -78,9 +78,9 @@ public class Demo extends JFrame {
                         generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         initializeRandomGrid();
-		        puzzleFigureComboBox.setEnabled(false);
+		        		puzzleFigureComboBox.setEnabled(false);
                         figureComboBox.setEnabled(false);  
-			removePuzzlePanel();
+						removePuzzlePanel();
                         play.setEnabled(true);
                         break;
                     case "Le joueur choisit":
@@ -88,42 +88,42 @@ public class Demo extends JFrame {
                         generationLabel.setText("Génération: 0");
                         generationCount = 0;
                         initializeEmptyGrid();
-		        puzzleFigureComboBox.setEnabled(false);
+		        		puzzleFigureComboBox.setEnabled(false);
                         figureComboBox.setEnabled(false);  
-			removePuzzlePanel();
+						removePuzzlePanel();
                         play.setEnabled(true);
                         break;
                     case "Figures":
                         currentMode = GridMode.FIGURES;
                         generationLabel.setText("Génération: 0");
                         generationCount = 0;
-		        puzzleFigureComboBox.setEnabled(false);
+		        		puzzleFigureComboBox.setEnabled(false);
                         figureComboBox.setEnabled(true);  
                         initializeEmptyGrid();  
-			removePuzzlePanel();
+						removePuzzlePanel();
                         play.setEnabled(true);
                         break;
-                   //Puzzle mode
-		    case "Puzzle":
-		        currentMode = GridMode.PUZZLE;
-		        generationLabel.setText("Génération: 0");
-		        generationCount = 0;
-		        puzzleChallenge = new PuzzleChallenge(size, liveCellColor, deadCellColor, emojisEnabled, 20, 10);
-		        initializeEmptyGrid();
-		        addPuzzlePanel(puzzleChallenge.getTargetPanel());
-		        puzzleFigureComboBox.setEnabled(true);
-		        figureComboBox.setEnabled(false);
-		        play.setEnabled(false);
-		        break;
                     //Puzzle mode
-                }
-                gridPanel.repaint();
-                updateAliveCellCount(); 
-            }
-        });
+					case "Puzzle":
+						currentMode = GridMode.PUZZLE;
+						generationLabel.setText("Génération: 0");
+						generationCount = 0;
+						puzzleChallenge = new PuzzleChallenge(size, liveCellColor, deadCellColor, emojisEnabled, 20, 10);
+						initializeEmptyGrid();
+						addPuzzlePanel(puzzleChallenge.getTargetPanel());
+						puzzleFigureComboBox.setEnabled(true);
+						figureComboBox.setEnabled(false);
+						play.setEnabled(false);
+						break;
+				            //Puzzle mode
+				        }
+				        gridPanel.repaint();
+				        updateAliveCellCount(); 
+				    }
+				});
 
 	    //Andrea
-        String[] figures = {"Glider", "Block", "Cloverleaf", "Butterfly", "Lightweight", "Pulsar", "Spaceship"};
+        String[] figures = {"Glider", "Block", "Cloverleaf", "Butterfly", "Lightweight", "Pulsar", "Spaceship", "Blinker"};
         figureComboBox = new JComboBox<>(figures);
         figureComboBox.setEnabled(false); 
         figureComboBox.addActionListener(new ActionListener() {
@@ -415,6 +415,10 @@ public class Demo extends JFrame {
                 figureWidth = 5;
                 figureHeight = 5;
                 break;
+            case "Blinker":
+                figureWidth = 3;
+                figureHeight = 1;
+                break;
         }
 
         if (x + figureWidth > grid.getSize() || y + figureHeight > grid.getSize()) {
@@ -450,6 +454,11 @@ public class Demo extends JFrame {
                 Shapes spaceship = new Spaceship();
                 spaceship.applyShape(this.grid, x, y);
                 break;
+            case "Blinker":
+                Shapes blinker = new Blinker();
+                blinker.applyShape(this.grid, x, y);
+                break;
+           
         }
         
         gridPanel.repaint();

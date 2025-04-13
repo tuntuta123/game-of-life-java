@@ -24,7 +24,6 @@ public class SubMenu implements MenuInterface {
     public final ColorItem defaultDeadColor = new ColorItem(Color.WHITE, "Pink");
     public final boolean defaultEmoji = false;
 
-    // Add JComboBox to select the algorithm
     public JComboBox<String> algorithmComboBox;  
 
     public SubMenu(String title) {
@@ -146,7 +145,7 @@ public class SubMenu implements MenuInterface {
                 if (selectedAlgorithm.equals("BasicAlgo")) {
                     demo = new Demo(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
                 } else if (selectedAlgorithm.equals("HashlifeAlgo")) {
-                    demoh = new DemoHashlife();
+                    demoh = new DemoHashlife(selectedSize, selectedLiveColorItem.getColor(), selectedDeadColorItem.getColor(), emojisEnabled);
                 }
 
                 if (demo != null) {

@@ -2,17 +2,20 @@ package conway.logic;
 
 import conway.algo.*;
 
-public class Quadtree {
-    private NodeHashlife root;
-    private int size;
+public class GridHashlife {
 
-    public Quadtree(int size, boolean[][] initialState) {
+    private int size;
+    private NodeHashlife root; 
+
+	public GridHashlife(int size, boolean[][] initialState) {
         this.size = size;
-        this.root = new NodeHashlife(size, initialState);
+        this.root = new NodeHashlife(size, initialState);  
     }
 
     public void generate() {
-        this.root = HashLifeAlgo.generateNextState(this);
+        Quadtree quadtree = gridToQuadtree();
+        quadtree.setRoot(HashLifeAlgo.generateNextState(quadtree));  
+        this.root = quadtree.getRoot(); 
     }
 
     public void printState() {
@@ -31,5 +34,10 @@ public class Quadtree {
     public void setRoot(NodeHashlife root) {
         this.root = root;
     }
+
+    private Quadtree gridToQuadtree() {
+        return new Quadtree(this.size, this.root.state);  
+    }
+
 }
 
